@@ -29,8 +29,8 @@
   .nav-links .dd-box a:last-child{ border-bottom:none; }
   .nav-links .dd-box a:hover{ color:var(--text); background:var(--green-900); border-color:var(--line); }
 
-  /* ---- Dưới 1260px: dùng nút menu ☰ để 9 mục không bị chen chúc ---- */
-  @media (max-width:1260px){
+  /* ---- Dưới 1280px: dùng nút menu ☰ để 9 mục không bị chen chúc ---- */
+  @media (max-width:1280px){
     .logo-img{ height:60px; }
     .nav{ height:84px; }
     .nav-links{ position:fixed; inset:84px 0 auto 0; background:var(--black); border-bottom:1px solid var(--line);
@@ -62,7 +62,16 @@
       <a href="index.html" data-nav="home">Trang chủ</a>
       <a href="dich-vu.html" data-nav="dichvu">Dịch vụ</a>
       <a href="uu-dai.html" data-nav="uudai">Ưu đãi</a>
-      <a href="tin-tuc.html" data-nav="tintuc">Tin tức</a>
+      <div class="nav-dropdown">
+        <a href="tin-tuc.html" data-nav="tintuc" class="dd-toggle" aria-haspopup="true">Tin tức <span class="chev" aria-hidden="true"></span></a>
+        <div class="nav-dd-menu">
+          <div class="dd-box">
+            <a href="tin-tuc.html">Tin thị trường</a>
+            <a href="lich-kinh-te.html">Lịch kinh tế</a>
+            <!-- THÊM MỤC MỚI: sao chép một dòng <a> ở trên, đổi đường dẫn và tên -->
+          </div>
+        </div>
+      </div>
       <a href="blog.html" data-nav="blog">Blog</a>
       <a href="tuyen-dung.html" data-nav="tuyendung">Tuyển dụng</a>
       <a href="lien-he.html" data-nav="lienhe">Liên hệ</a>
