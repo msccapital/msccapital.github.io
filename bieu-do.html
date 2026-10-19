@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biểu đồ — MSC Capital</title>
+<meta name="description" content="Biểu đồ giá hàng hóa (dầu WTI, Brent) và biểu đồ kinh tế (tỷ lệ lạm phát của Mỹ) do Trading Economics cung cấp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  section[id]{ scroll-margin-top: 110px; }
+  .tool-nav{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:26px; }
+  .tool-nav span{ font-family: var(--font-mono); font-size:12.5px; color: var(--text-faint); margin-right:4px; }
+  .tool-nav a{ border:1px solid var(--line-strong); padding:8px 14px; font-size:14px; font-family: var(--font-display); font-weight:500; }
+  .tool-nav a:hover{ border-color: var(--green-400); color: var(--green-200); }
+  .chart-card{ min-width:0; }
+  .chart-card h3{ font-size:18px; margin-bottom:12px; }
+  /* Biểu đồ của Trading Economics có nền sáng, đặt trong khung trắng để dễ nhìn trên giao diện tối */
+  .chart-box{ background:#fff; border:1px solid var(--line-strong); padding:10px; overflow-x:auto; max-width:100%; min-height:200px; }
+  .chart-note{ font-size:12.5px; color: var(--text-faint); margin:10px 0 0; max-width:none; }
+</style>
+</head>
+<body data-page="bieudo">
+
+<div id="site-header"></div>
+
+<section class="page-hero">
+  <div class="wrap">
+    <div class="eyebrow">Biểu đồ</div>
+    <h1>Biểu đồ thị trường và kinh tế</h1>
+    <p class="lede">Biểu đồ giá hàng hóa và chỉ số kinh tế vĩ mô, giúp bạn theo dõi những yếu tố tác động đến thị trường chứng khoán.</p>
+    <!-- DANH SÁCH MỤC: khi thêm mục mới, thêm một liên kết như dưới (href trỏ tới id của mục đó). -->
+    <div class="tool-nav">
+      <span>Mục:</span>
+      <a href="#hang-hoa">Hàng hóa</a>
+      <a href="#bieu-do-kinh-te">Biểu đồ kinh tế</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HÀNG HÓA ===== -->
+<section id="hang-hoa">
+  <div class="wrap">
+    <div class="head-row">
+      <div>
+        <div class="eyebrow">Hàng hóa</div>
+        <h2>Giá dầu thô</h2>
+      </div>
+      <p>Diễn biến giá dầu WTI (Mỹ) và dầu Brent (Biển Bắc), hai mức giá tham chiếu quan trọng của thị trường năng lượng thế giới.</p>
+    </div>
+    <div class="grid-2">
+      <div class="chart-card">
+        <h3>Dầu thô WTI</h3>
+        <div class="chart-box">
+          <div class="te-embed" data-widget="ec-pro" data-use-container-size="false" data-url="/united-states/spot-crude-oil-price-west-texas-intermediate-wti-fed-data.html"></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Dầu thô Brent</h3>
+        <div class="chart-box">
+          <div class="te-embed" data-widget="mc-pro" data-symbol="co1:com"></div>
+        </div>
+      </div>
+    </div>
+    <p class="chart-note">Biểu đồ do Trading Economics cung cấp. Dữ liệu mang tính tham khảo, không phải khuyến nghị đầu tư.</p>
+  </div>
+</section>
+
+<!-- ===== BIỂU ĐỒ KINH TẾ ===== -->
+<section id="bieu-do-kinh-te">
+  <div class="wrap">
+    <div class="head-row">
+      <div>
+        <div class="eyebrow">Biểu đồ kinh tế</div>
+        <h2>Tỷ lệ lạm phát của Mỹ</h2>
+      </div>
+      <p>Chỉ số giá tiêu dùng (CPI) của Mỹ là một trong những dữ liệu được thị trường theo dõi sát, vì ảnh hưởng đến kỳ vọng lãi suất và dòng vốn toàn cầu.</p>
+    </div>
+    <div class="grid-2">
+      <div class="chart-card">
+        <h3>Lạm phát (CPI) của Mỹ</h3>
+        <div class="chart-box">
+          <div class="te-embed" data-widget="ec-pro" data-use-container-size="false" data-url="/united-states/inflation-cpi"></div>
+        </div>
+      </div>
+    </div>
+    <p class="chart-note">Biểu đồ do Trading Economics cung cấp. Dữ liệu mang tính tham khảo, không phải khuyến nghị đầu tư.</p>
+
+    <!-- THÊM BIỂU ĐỒ KINH TẾ MỚI Ở ĐÂY: sao chép một khối <div class="chart-card"> ... </div> ở trên và thay mã nhúng .te-embed -->
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="js/include.js"></script>
+<!-- Script của Trading Economics: đặt một lần, sau tất cả các biểu đồ -->
+<script src="https://widget.tradingeconomics.com/widget.js"></script>
+</body>
+</html>
