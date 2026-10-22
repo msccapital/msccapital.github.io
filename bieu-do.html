@@ -13,13 +13,16 @@
   .tool-nav{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:26px; }
   .tool-nav span{ font-family: var(--font-mono); font-size:12.5px; color: var(--text-faint); margin-right:4px; }
   .tool-nav a{ border:1px solid var(--line-strong); padding:8px 14px; font-size:14px; font-family: var(--font-display); font-weight:500; }
-  .tool-nav a:hover{ border-color: var(--green-400); color: var(--green-200); }
+  .tool-nav a:hover,
+  .tool-nav a.active{ border-color: var(--green-400); color: var(--green-200); }
   .chart-card{ min-width:0; }
   .chart-card h3{ font-size:18px; margin-bottom:12px; }
   .chart-box{ border:1px solid var(--line-strong); padding:0; max-width:100%; overflow:hidden; background:var(--black); }
   .chart-box .tradingview-widget-copyright{ padding:6px 12px 8px; color:var(--text-faint); }
   .chart-box .tradingview-widget-copyright a{ color:var(--green-400); }
   .chart-note{ font-size:12.5px; color: var(--text-faint); margin:10px 0 0; max-width:none; }
+  /* Ẩn mục không được chọn */
+  .tab-section[hidden]{ display:none !important; }
 </style>
 </head>
 <body data-page="bieudo">
@@ -41,7 +44,7 @@
 </section>
 
 <!-- ===== HÀNG HÓA ===== -->
-<section id="hang-hoa">
+<section id="hang-hoa" class="tab-section" hidden>
   <div class="wrap">
     <div class="head-row">
       <div>
@@ -57,7 +60,8 @@
         <div class="tradingview-widget-container" style="height:480px; width:100%;">
           <div class="tradingview-widget-container__widget" style="height:calc(100% - 30px); width:100%;"></div>
           <div class="tradingview-widget-copyright" style="font-size:12px; padding-top:6px;"><a href="https://www.tradingview.com/symbols/TVC-USOIL/" rel="noopener nofollow" target="_blank" style="text-decoration:underline;">Dầu thô WTI</a> theo dõi trên TradingView</div>
-          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+          <!-- Widget được nạp khi mục này hiện ra (xem script cuối trang) -->
+          <script type="application/json" class="tv-config" data-src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js">
 {
   "autosize": true,
   "symbol": "TVC:USOIL",
@@ -83,7 +87,7 @@
         <div class="tradingview-widget-container" style="height:480px; width:100%;">
           <div class="tradingview-widget-container__widget" style="height:calc(100% - 30px); width:100%;"></div>
           <div class="tradingview-widget-copyright" style="font-size:12px; padding-top:6px;"><a href="https://www.tradingview.com/symbols/TVC-UKOIL/" rel="noopener nofollow" target="_blank" style="text-decoration:underline;">Dầu thô Brent</a> theo dõi trên TradingView</div>
-          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+          <script type="application/json" class="tv-config" data-src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js">
 {
   "autosize": true,
   "symbol": "TVC:UKOIL",
@@ -110,7 +114,7 @@
 </section>
 
 <!-- ===== BIỂU ĐỒ KINH TẾ ===== -->
-<section id="bieu-do-kinh-te">
+<section id="bieu-do-kinh-te" class="tab-section" hidden>
   <div class="wrap">
     <div class="head-row">
       <div>
@@ -126,7 +130,7 @@
         <div class="tradingview-widget-container" style="height:480px; width:100%;">
           <div class="tradingview-widget-container__widget" style="height:calc(100% - 30px); width:100%;"></div>
           <div class="tradingview-widget-copyright" style="font-size:12px; padding-top:6px;"><a href="https://www.tradingview.com/symbols/ECONOMICS-USIRYY/" rel="noopener nofollow" target="_blank" style="text-decoration:underline;">Lạm phát Mỹ (so với cùng kỳ năm trước)</a> theo dõi trên TradingView</div>
-          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+          <script type="application/json" class="tv-config" data-src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js">
 {
   "autosize": true,
   "symbol": "ECONOMICS:USIRYY",
@@ -154,5 +158,45 @@
 
 <div id="site-footer"></div>
 <script src="js/include.js"></script>
+
+<script>
+/* Chia mục: chỉ hiện mục đang chọn theo #hash (mặc định: mục đầu tiên).
+   Widget TradingView chỉ được nạp khi mục đó hiện ra, để biểu đồ có đúng kích thước. */
+(function () {
+  var sections = Array.prototype.slice.call(document.querySelectorAll('.tab-section'));
+  var links = Array.prototype.slice.call(document.querySelectorAll('.tool-nav a'));
+
+  function loadWidgets(section) {
+    var configs = section.querySelectorAll('script.tv-config');
+    Array.prototype.forEach.call(configs, function (cfg) {
+      if (cfg.dataset.loaded) return;
+      cfg.dataset.loaded = '1';
+      var s = document.createElement('script');
+      s.type = 'text/javascript';
+      s.src = cfg.getAttribute('data-src');
+      s.async = true;
+      s.text = cfg.textContent;           // TradingView đọc cấu hình từ nội dung thẻ script
+      cfg.parentNode.appendChild(s);
+    });
+  }
+
+  function show() {
+    var id = location.hash.replace('#', '');
+    if (!sections.some(function (s) { return s.id === id; })) id = sections[0].id;
+
+    sections.forEach(function (s) {
+      var on = s.id === id;
+      s.hidden = !on;
+      if (on) loadWidgets(s);
+    });
+    links.forEach(function (a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+  }
+
+  window.addEventListener('hashchange', show);
+  show();
+})();
+</script>
 </body>
 </html>
