@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Biểu đồ — MSC Capital</title>
-<meta name="description" content="Biểu đồ giá hàng hóa (dầu WTI, Brent) và biểu đồ kinh tế (tỷ lệ lạm phát của Mỹ) do Trading Economics cung cấp.">
+<meta name="description" content="Biểu đồ giá hàng hóa (dầu WTI, Brent) và biểu đồ kinh tế (tỷ lệ lạm phát của Mỹ) do TradingView cung cấp.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
@@ -16,9 +16,9 @@
   .tool-nav a:hover{ border-color: var(--green-400); color: var(--green-200); }
   .chart-card{ min-width:0; }
   .chart-card h3{ font-size:18px; margin-bottom:12px; }
-  /* Biểu đồ của Trading Economics có nền sáng, đặt trong khung trắng để dễ nhìn trên giao diện tối */
-  .chart-box{ background:#fff; border:1px solid var(--line-strong); padding:10px; overflow-x:auto; max-width:100%; min-height:200px; }
-  .chart-box iframe{ display:block; border:0; max-width:100%; width:100%; height:480px; }
+  .chart-box{ border:1px solid var(--line-strong); padding:0; max-width:100%; overflow:hidden; background:var(--black); }
+  .chart-box .tradingview-widget-copyright{ padding:6px 12px 8px; color:var(--text-faint); }
+  .chart-box .tradingview-widget-copyright a{ color:var(--green-400); }
   .chart-note{ font-size:12.5px; color: var(--text-faint); margin:10px 0 0; max-width:none; }
 </style>
 </head>
@@ -54,17 +54,58 @@
       <div class="chart-card">
         <h3>Dầu thô WTI</h3>
         <div class="chart-box">
-          <iframe class="inv-chart" data-pair="8849" height="480" title="Biểu đồ giá dầu thô WTI" loading="lazy"></iframe>
+        <div class="tradingview-widget-container" style="height:480px; width:100%;">
+          <div class="tradingview-widget-container__widget" style="height:calc(100% - 30px); width:100%;"></div>
+          <div class="tradingview-widget-copyright" style="font-size:12px; padding-top:6px;"><a href="https://www.tradingview.com/symbols/TVC-USOIL/" rel="noopener nofollow" target="_blank" style="text-decoration:underline;">Dầu thô WTI</a> theo dõi trên TradingView</div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+{
+  "autosize": true,
+  "symbol": "TVC:USOIL",
+  "interval": "D",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "theme": "dark",
+  "style": "3",
+  "locale": "vi_VN",
+  "backgroundColor": "rgba(9, 13, 10, 1)",
+  "gridColor": "rgba(255, 255, 255, 0.06)",
+  "allow_symbol_change": false,
+  "save_image": false,
+  "hide_volume": true,
+  "support_host": "https://www.tradingview.com"
+}
+          </script>
+        </div>
         </div>
       </div>
       <div class="chart-card">
         <h3>Dầu thô Brent</h3>
         <div class="chart-box">
-          <iframe class="inv-chart" data-pair="8833" height="480" title="Biểu đồ giá dầu thô Brent" loading="lazy"></iframe>
+        <div class="tradingview-widget-container" style="height:480px; width:100%;">
+          <div class="tradingview-widget-container__widget" style="height:calc(100% - 30px); width:100%;"></div>
+          <div class="tradingview-widget-copyright" style="font-size:12px; padding-top:6px;"><a href="https://www.tradingview.com/symbols/TVC-UKOIL/" rel="noopener nofollow" target="_blank" style="text-decoration:underline;">Dầu thô Brent</a> theo dõi trên TradingView</div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+{
+  "autosize": true,
+  "symbol": "TVC:UKOIL",
+  "interval": "D",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "theme": "dark",
+  "style": "3",
+  "locale": "vi_VN",
+  "backgroundColor": "rgba(9, 13, 10, 1)",
+  "gridColor": "rgba(255, 255, 255, 0.06)",
+  "allow_symbol_change": false,
+  "save_image": false,
+  "hide_volume": true,
+  "support_host": "https://www.tradingview.com"
+}
+          </script>
+        </div>
         </div>
       </div>
     </div>
-    <p class="chart-note">Biểu đồ do <a href="https://www.investing.com" target="_blank" rel="noopener" style="text-decoration:underline;">Investing.com</a> cung cấp. Dữ liệu mang tính tham khảo, không phải khuyến nghị đầu tư.</p>
+    <p class="chart-note">Biểu đồ do TradingView cung cấp. Dữ liệu mang tính tham khảo, có thể chậm so với thị trường, không phải khuyến nghị đầu tư.</p>
+    <!-- THÊM BIỂU ĐỒ HÀNG HÓA MỚI: sao chép một khối <div class="chart-card"> ... </div> ở trên, đổi "symbol" (ví dụ TVC:GOLD cho vàng) và tên. -->
   </div>
 </section>
 
@@ -80,53 +121,38 @@
     </div>
     <div class="grid-2">
       <div class="chart-card">
-        <h3>Lạm phát (CPI) của Mỹ</h3>
+        <h3>Lạm phát của Mỹ (so với cùng kỳ năm trước)</h3>
         <div class="chart-box">
-          <div class="te-embed" data-widget="ec-pro" data-use-container-size="false" data-url="/united-states/inflation-cpi"></div>
+        <div class="tradingview-widget-container" style="height:480px; width:100%;">
+          <div class="tradingview-widget-container__widget" style="height:calc(100% - 30px); width:100%;"></div>
+          <div class="tradingview-widget-copyright" style="font-size:12px; padding-top:6px;"><a href="https://www.tradingview.com/symbols/ECONOMICS-USIRYY/" rel="noopener nofollow" target="_blank" style="text-decoration:underline;">Lạm phát Mỹ (so với cùng kỳ năm trước)</a> theo dõi trên TradingView</div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+{
+  "autosize": true,
+  "symbol": "ECONOMICS:USIRYY",
+  "interval": "M",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "theme": "dark",
+  "style": "2",
+  "locale": "vi_VN",
+  "backgroundColor": "rgba(9, 13, 10, 1)",
+  "gridColor": "rgba(255, 255, 255, 0.06)",
+  "allow_symbol_change": false,
+  "save_image": false,
+  "hide_volume": true,
+  "support_host": "https://www.tradingview.com"
+}
+          </script>
+        </div>
         </div>
       </div>
     </div>
-    <p class="chart-note">Biểu đồ do Trading Economics cung cấp. Dữ liệu mang tính tham khảo, không phải khuyến nghị đầu tư.</p>
-
-    <!-- THÊM BIỂU ĐỒ KINH TẾ MỚI Ở ĐÂY: sao chép một khối <div class="chart-card"> ... </div> ở trên và thay mã nhúng .te-embed -->
+    <p class="chart-note">Biểu đồ do TradingView cung cấp. Dữ liệu cập nhật theo tháng, mang tính tham khảo, không phải khuyến nghị đầu tư.</p>
+    <!-- THÊM BIỂU ĐỒ KINH TẾ MỚI Ở ĐÂY: sao chép một khối <div class="chart-card"> ... </div> ở trên và đổi "symbol". -->
   </div>
 </section>
 
 <div id="site-footer"></div>
 <script src="js/include.js"></script>
-<!-- Script của Trading Economics: đặt một lần, sau tất cả các biểu đồ -->
-<!-- Biểu đồ Investing.com: chỉnh chiều rộng cho vừa khung (các tham số còn lại giữ nguyên như mã nhúng gốc) -->
-<script>
-(function () {
-  function sizeFrames() {
-    document.querySelectorAll('iframe.inv-chart').forEach(function (f) {
-      var box = f.parentElement;
-      var w = Math.max(300, Math.floor(box.clientWidth - 20));          // trừ lề của khung trắng
-      if (Math.abs(w - (parseInt(f.getAttribute('data-w'), 10) || 0)) < 20) return;
-      f.setAttribute('data-w', w);
-      f.src = 'https://ssltvc.investing.com/?pair_ID=' + f.getAttribute('data-pair') +
-              '&height=480&width=' + w + '&interval=300&plotStyle=area&domain_ID=52&lang_ID=52&timezone_ID=0';
-    });
-  }
-  var t;
-  window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(sizeFrames, 400); });
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sizeFrames); else sizeFrames();
-})();
-</script>
-<script src="https://widget.tradingeconomics.com/widget.js"></script>
-<script>
-/* Nếu sau 8 giây khung biểu đồ vẫn trống (widget không tải được), hiện thông báo kèm liên kết thay vì để khung trắng. */
-window.addEventListener('load', function () {
-  setTimeout(function () {
-    document.querySelectorAll('.te-embed').forEach(function (el) {
-      if (el.children.length || el.textContent.trim()) return;
-      var path = el.getAttribute('data-url') || '';
-      var link = path ? 'https://tradingeconomics.com' + path : 'https://tradingeconomics.com/commodities';
-      el.innerHTML = '<p style="color:#333;margin:0;padding:18px;font-size:14px;line-height:1.6;">Biểu đồ chưa tải được. ' +
-        '<a href="' + link + '" target="_blank" rel="noopener" style="color:#17824a;text-decoration:underline;">Xem trực tiếp tại Trading Economics →</a></p>';
-    });
-  }, 8000);
-});
-</script>
 </body>
 </html>
