@@ -4,15 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lịch kinh tế — MSC Capital</title>
-<meta name="description" content="Lịch kinh tế theo tuần: các sự kiện, số liệu kinh tế quan trọng và mức độ tác động đến thị trường, do Investing.com cung cấp.">
+<meta name="description" content="Lịch kinh tế: các sự kiện, số liệu kinh tế quan trọng và mức độ tác động đến thị trường, do TradingView cung cấp.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <style>
-  /* Lịch của Investing.com có nền sáng, đặt trong khung trắng để dễ nhìn trên giao diện tối */
-  .cal-box{ background:#fff; border:1px solid var(--line-strong); padding:10px; max-width:100%; }
-  .cal-box iframe{ display:block; width:100%; max-width:100%; height:620px; border:0; }
-  .cal-credit{ font-family: Arial, Helvetica, sans-serif; padding:8px 4px 2px; }
+  section[id]{ scroll-margin-top: 110px; }
+  .tool-nav{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:26px; }
+  .tool-nav span{ font-family: var(--font-mono); font-size:12.5px; color: var(--text-faint); margin-right:4px; }
+  .tool-nav a{ border:1px solid var(--line-strong); padding:8px 14px; font-size:14px; font-family: var(--font-display); font-weight:500; }
+  .tool-nav a:hover{ border-color: var(--green-400); color: var(--green-200); }
+  .chart-card{ min-width:0; }
+  .chart-card h3{ font-size:18px; margin-bottom:12px; }
+  .chart-box{ border:1px solid var(--line-strong); padding:0; max-width:100%; overflow:hidden; background:var(--black); }
+  .chart-box .tradingview-widget-copyright{ padding:6px 12px 8px; color:var(--text-faint); }
+  .chart-box .tradingview-widget-copyright a{ color:var(--green-400); }
+  .chart-note{ font-size:12.5px; color: var(--text-faint); margin:10px 0 0; max-width:none; }
 </style>
 </head>
 <body data-page="tintuc">
@@ -23,17 +30,30 @@
   <div class="wrap">
     <div class="eyebrow">Tin tức</div>
     <h1>Lịch kinh tế</h1>
-    <p class="lede">Các sự kiện và số liệu kinh tế quan trọng trong tuần, kèm giá trị thực tế, dự báo và kỳ trước, giúp bạn chuẩn bị trước những thời điểm thị trường dễ biến động.</p>
+    <p class="lede">Các sự kiện và số liệu kinh tế quan trọng, kèm giá trị thực tế, dự báo và kỳ trước, giúp bạn chuẩn bị trước những thời điểm thị trường dễ biến động.</p>
   </div>
 </section>
 
 <section style="border-bottom:none;">
   <div class="wrap">
-    <div class="cal-box">
-      <iframe src="https://sslecal2.investing.com?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&features=datepicker,timezone&countries=33,14,4,34,38,32,6,11,51,5,39,72,60,110,43,35,71,22,36,26,12,9,37,25,178,10,17&calType=week&timeZone=2&lang=52" title="Lịch kinh tế" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0" loading="lazy"></iframe>
-      <div class="poweredBy cal-credit"><span style="font-size: 11px;color: #333333;text-decoration: none;">Lịch Kinh Tế theo Thời Gian Thực được cung cấp bởi <a href="https://vn.Investing.com/" rel="nofollow" target="_blank" style="font-size: 11px;color: #06529D; font-weight: bold;" class="underline_link">Investing.com Việt Nam</a></span></div>
+    <div class="chart-box">
+        <div class="tradingview-widget-container" style="height:680px; width:100%;">
+          <div class="tradingview-widget-container__widget" style="height:calc(100% - 30px); width:100%;"></div>
+          <div class="tradingview-widget-copyright" style="font-size:12px; padding-top:6px;"><a href="https://www.tradingview.com/economic-calendar/" rel="noopener nofollow" target="_blank" style="text-decoration:underline;">Lịch kinh tế</a> theo dõi trên TradingView</div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
+{
+  "colorTheme": "dark",
+  "isTransparent": false,
+  "locale": "vi_VN",
+  "countryFilter": "us,eu,jp,gb,cn,au,ca,de,fr,kr,in,id",
+  "importanceFilter": "-1,0,1",
+  "width": "100%",
+  "height": "650"
+}
+          </script>
+        </div>
     </div>
-    <p class="disclaimer" style="margin-top:16px;">Dữ liệu mang tính tham khảo, không phải khuyến nghị đầu tư. Bạn có thể đổi tuần xem bằng ô chọn ngày và đổi múi giờ ngay trong lịch.</p>
+    <p class="chart-note">Lịch do TradingView cung cấp. Có thể lọc theo quốc gia và mức độ quan trọng ngay trong lịch. Dữ liệu mang tính tham khảo, không phải khuyến nghị đầu tư.</p>
   </div>
 </section>
 
