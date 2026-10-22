@@ -6,9 +6,20 @@
   .nav-links{ gap:16px; }
   .nav-links a{ white-space:nowrap; }
 
-  /* ---- Ô chọn ngôn ngữ ---- */
-  .lang-switch select{ width:auto; background:var(--panel-solid); color:var(--text); border:1px solid var(--line-strong);
-                       padding:8px 10px; font-size:13.5px; font-family:var(--font-mono); cursor:pointer; }
+  /* ---- Nút chọn ngôn ngữ (biểu tượng 🌐 màu trắng) ---- */
+  .lang-switch{ position:relative; }
+  .lang-btn{ width:42px; height:42px; display:inline-flex; align-items:center; justify-content:center; padding:0;
+             background:none; color:#fff; border:1px solid var(--line-strong); border-radius:2px; cursor:pointer; }
+  .lang-btn:hover, .lang-btn[aria-expanded="true"]{ border-color:var(--green-400); }
+  .lang-menu{ position:absolute; right:0; top:calc(100% + 12px); width:250px; max-width:calc(100vw - 32px); z-index:70;
+              background:var(--panel-solid); border:1px solid var(--line-strong); box-shadow:0 12px 28px rgba(0,0,0,.5); }
+  .lang-menu[hidden]{ display:none; }
+  .lang-search{ display:block; width:100%; border:0; border-bottom:1px solid var(--line); border-radius:0; background:transparent; padding:12px 14px; font-size:14px; }
+  .lang-list{ max-height:min(60vh, 420px); overflow-y:auto; }
+  .lang-list button{ display:block; width:100%; text-align:left; background:none; border:0; color:var(--text-muted);
+                     padding:10px 14px; font-size:14px; font-family:var(--font-body); cursor:pointer; border-bottom:1px solid var(--line); }
+  .lang-list button:hover{ background:var(--green-900); color:var(--text); }
+  .lang-list button.on{ color:var(--green-400); font-weight:600; }
 
   /* ---- Ẩn thanh/khung của Google Dịch để không đẩy lệch trang ---- */
   body{ top:0 !important; }
@@ -74,7 +85,6 @@
       </div>
       <a href="blog.html" data-nav="blog">Blog</a>
       <a href="tuyen-dung.html" data-nav="tuyendung">Tuyển dụng</a>
-      <a href="lien-he.html" data-nav="lienhe">Liên hệ</a>
       <div class="nav-dropdown">
         <a href="bieu-do.html" data-nav="bieudo" class="dd-toggle" aria-haspopup="true">Biểu đồ <span class="chev" aria-hidden="true"></span></a>
         <div class="nav-dd-menu">
@@ -94,14 +104,15 @@
           </div>
         </div>
       </div>
+      <a href="lien-he.html" data-nav="lienhe">Liên hệ</a>
     </nav>
     <div class="nav-cta">
       <a class="btn btn-primary btn-sm" href="lien-he.html">Đăng ký tư vấn</a>
       <div class="lang-switch" translate="no">
-        <select id="langSelect" aria-label="Ngôn ngữ / Language" title="Ngôn ngữ / Language">
-          <option value="vi">VI</option>
-          <option value="en">EN</option>
-        </select>
+        <button type="button" class="lang-btn" id="langBtn" aria-label="Chọn ngôn ngữ / Language" aria-haspopup="true" aria-expanded="false" title="Ngôn ngữ / Language">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19"/><path d="M12 2.5c2.6 2.7 4 6 4 9.5s-1.4 6.8-4 9.5c-2.6-2.7-4-6-4-9.5s1.4-6.8 4-9.5z"/></svg>
+        </button>
+        <div class="lang-menu" id="langMenu" hidden></div>
       </div>
       <button class="nav-toggle" id="navToggle" aria-label="Mở menu" aria-expanded="false">☰</button>
     </div>
