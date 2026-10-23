@@ -19,9 +19,9 @@
       "tag": "Video",
       "excerpt": "Đòn bẩy tài chính là con dao hai lưỡi. MSC Capital giải thích cơ chế margin, call margin và cách kiểm soát rủi ro trong video ngắn dưới đây.",
       "content": "Giao dịch ký quỹ (margin) cho phép nhà đầu tư vay thêm tiền từ công ty chứng khoán để mua cổ phiếu, dùng chính cổ phiếu đó làm tài sản đảm bảo. Sức mua tăng lên, nhưng rủi ro cũng tăng theo tỷ lệ đòn bẩy.\n\nVideo trên minh hoạ ba khái niệm nhà đầu tư mới dùng margin cần nắm: tỷ lệ ký quỹ ban đầu, ngưỡng gọi ký quỹ (margin call) và thời điểm công ty chứng khoán buộc bán giải chấp.\n\nNguyên tắc MSC Capital khuyên dùng: chỉ dùng margin cho phần vốn có thể chấp nhận mất, ưu tiên các mã thanh khoản cao trong danh mục cho vay ký quỹ, và luôn để một khoảng đệm an toàn trước ngưỡng gọi ký quỹ thay vì canh sát mép.",
-      "cover": "",
+      "cover": "/assets/img/chovaymargin-1625209414-3717-1625209454.jpg",
       "images": [],
-      "video": "https://www.youtube.com/embed/M7lc1UVf-VE",
+      "video": "",
       "slug": "margin-la-gi-dung-sao-cho-an-toan"
     },
     {
