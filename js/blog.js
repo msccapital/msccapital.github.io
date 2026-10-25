@@ -15,13 +15,13 @@ function postThumbHTML(post) {
     const id = post.video.split('/embed/')[1];
     const imgSrc = id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : '';
     return `<div class="post-thumb">
-      ${imgSrc ? `<img src="${imgSrc}" alt="${post.title}" loading="lazy">` : ''}
+      ${imgSrc ? `<img src="${imgSrc}" alt="${escHtml(post.title)}" loading="lazy">` : ''}
       <div class="play">
         <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" stroke="#edf3ee" stroke-width="1.4"/><path d="M10 8l6 4-6 4V8z" fill="#edf3ee"/></svg>
       </div>
     </div>`;
   }
-  return `<div class="post-thumb">${post.cover ? `<img src="${post.cover}" alt="${post.title}" loading="lazy">` : ''}</div>`;
+  return `<div class="post-thumb">${post.cover ? `<img src="${post.cover}" alt="${escHtml(post.title)}" loading="lazy">` : ''}</div>`;
 }
 
 function slugifyVN(s) {
@@ -102,6 +102,75 @@ function renderMarkdown(src) {
   return out.join('\n');
 }
 
+/* ===== Làm sạch nội dung HTML từ trình soạn thảo (soan-bai.html) =====
+   Chỉ giữ các thẻ và kiểu định dạng an toàn: đậm/nghiêng/gạch chân, tiêu đề, danh sách, trích dẫn, liên kết, ảnh,
+   video YouTube, cỡ chữ, màu chữ, màu nền, căn lề. Mọi thứ khác (script, sự kiện onclick...) bị loại bỏ. */
+const SAN_TAGS = new Set(['P','BR','H1','H2','H3','H4','STRONG','B','EM','I','U','S','DEL','SUB','SUP','UL','OL','LI','BLOCKQUOTE','A','IMG','SPAN','DIV','HR','IFRAME','PRE','CODE']);
+const SAN_DROP = new Set(['SCRIPT','STYLE','OBJECT','EMBED','FORM','INPUT','BUTTON','TEXTAREA','SELECT','LINK','META','SVG','MATH','NOSCRIPT','TEMPLATE']);
+const SAN_COLOR = /^(#[0-9a-f]{3,8}|rgba?\(\s*[\d.]+%?\s*,\s*[\d.]+%?\s*,\s*[\d.]+%?\s*(,\s*[\d.]+%?\s*)?\)|[a-z]{3,20})$/i;
+function sanStyle(css) {
+  const out = [];
+  String(css || '').split(';').forEach(decl => {
+    const i = decl.indexOf(':');
+    if (i < 0) return;
+    const k = decl.slice(0, i).trim().toLowerCase(), v = decl.slice(i + 1).trim();
+    if ((k === 'color' || k === 'background-color') && SAN_COLOR.test(v)) out.push(`${k}: ${v}`);
+    else if (k === 'font-size' && /^\d+(\.\d+)?(px|pt|em|rem|%)$/i.test(v)) out.push(`font-size: ${v}`);
+    else if (k === 'text-align' && /^(left|right|center|justify)$/i.test(v)) out.push(`text-align: ${v.toLowerCase()}`);
+    else if (k === 'font-weight' && /^(normal|bold|[1-9]00)$/i.test(v)) out.push(`font-weight: ${v}`);
+    else if (k === 'font-style' && /^(normal|italic)$/i.test(v)) out.push(`font-style: ${v}`);
+    else if (k === 'text-decoration' && /^(none|underline|line-through|underline line-through)$/i.test(v)) out.push(`text-decoration: ${v}`);
+  });
+  return out.join('; ');
+}
+function sanUrl(u, allowRelative) {
+  u = String(u || '').trim();
+  if (/^(https?:|mailto:|tel:|#)/i.test(u)) return u;
+  if (allowRelative && /^[\w./%~-][^:]*$/.test(u) && !u.includes('..')) return u.replace(/^\/+/, '');
+  return '';
+}
+function sanNode(node, doc) {
+  if (node.nodeType === 3) return doc.createTextNode(node.nodeValue);
+  if (node.nodeType !== 1) return null;
+  const tag = node.tagName;
+  const frag = doc.createDocumentFragment();
+  const kids = () => { node.childNodes.forEach(c => { const r = sanNode(c, doc); if (r) frag.appendChild(r); }); return frag; };
+  if (SAN_DROP.has(tag)) return null;
+  if (!SAN_TAGS.has(tag)) return kids();                      // thẻ lạ: bỏ thẻ, giữ chữ bên trong
+  const el = doc.createElement(tag.toLowerCase());
+  const style = sanStyle(node.getAttribute('style'));
+  if (style && tag !== 'IFRAME' && tag !== 'IMG') el.setAttribute('style', style);
+  const cls = (node.getAttribute('class') || '').split(/\s+/).filter(c => /^ql-indent-[1-8]$/.test(c) || c === 'ql-video');
+  if (cls.length && tag !== 'IFRAME') el.setAttribute('class', cls.filter(c => c !== 'ql-video').join(' '));
+  if (tag === 'A') {
+    const h = sanUrl(node.getAttribute('href'), false);
+    if (!h) return kids();
+    el.setAttribute('href', h); el.setAttribute('target', '_blank'); el.setAttribute('rel', 'noopener noreferrer');
+  }
+  if (tag === 'IMG') {
+    const src = sanUrl(node.getAttribute('src'), true);
+    if (!src || /^(mailto:|tel:|#)/i.test(src)) return null;
+    el.setAttribute('src', src); el.setAttribute('alt', node.getAttribute('alt') || ''); el.setAttribute('loading', 'lazy');
+    const st = sanStyle(node.getAttribute('style')); if (st) el.setAttribute('style', st);
+    return el;
+  }
+  if (tag === 'IFRAME') {
+    const src = String(node.getAttribute('src') || '').trim();
+    if (!/^https:\/\/(www\.)?youtube(-nocookie)?\.com\/embed\/[\w-]+(\?[\w=&%.-]*)?$/i.test(src)) return null;
+    el.setAttribute('src', src); el.setAttribute('class', 'ql-video'); el.setAttribute('allowfullscreen', 'true');
+    el.setAttribute('loading', 'lazy'); el.setAttribute('title', 'Video'); el.setAttribute('frameborder', '0');
+    return el;
+  }
+  el.appendChild(kids());
+  return el;
+}
+function sanitizeHtml(html) {
+  const doc = new DOMParser().parseFromString('<body>' + String(html || '') + '</body>', 'text/html');
+  const out = doc.createElement('div');
+  doc.body.childNodes.forEach(c => { const r = sanNode(c, doc); if (r) out.appendChild(r); });
+  return out.innerHTML;
+}
+
 const POST_CSS = `
 .post-content{ max-width:72ch; }
 .post-content p{ max-width:72ch; font-size:16.5px; color:var(--text); line-height:1.8; }
@@ -116,6 +185,11 @@ const POST_CSS = `
 .post-content blockquote{ margin:24px 0; padding:6px 0 6px 18px; border-left:3px solid var(--orange); color:var(--text-muted); font-size:16.5px; }
 .post-content img{ max-width:100%; height:auto; margin:24px 0; border:1px solid var(--line); }
 .post-content hr{ border:0; border-top:1px solid var(--line); margin:32px 0; }
+.post-content iframe.ql-video{ display:block; width:100%; aspect-ratio:16/9; height:auto; border:1px solid var(--line); margin:24px 0; }
+.post-content li.ql-indent-1{ margin-left:1.6em; } .post-content li.ql-indent-2{ margin-left:3.2em; } .post-content li.ql-indent-3{ margin-left:4.8em; } .post-content li.ql-indent-4{ margin-left:6.4em; }
+.post-content li.ql-indent-5{ margin-left:8em; } .post-content li.ql-indent-6{ margin-left:9.6em; } .post-content li.ql-indent-7{ margin-left:11.2em; } .post-content li.ql-indent-8{ margin-left:12.8em; }
+.post-content p, .post-content li, .post-content blockquote, .post-content h2, .post-content h3, .post-content h4{ max-width:none; }
+.post-content u{ text-underline-offset:3px; }
 .post-content pre{ overflow-x:auto; background:var(--panel-solid); border:1px solid var(--line); padding:14px; font-size:14px; }
 `;
 
@@ -129,7 +203,9 @@ async function fetchPosts() {
     video: toEmbedUrl(p.video || ''),
     cover: (p.cover || '').replace(/^\/+/, ''),
     images: (p.images || []).map(src => String(src).replace(/^\/+/, '')),
-    contentHtml: Array.isArray(p.content)
+    contentHtml: (typeof p.contentHtml === 'string' && p.contentHtml.trim())
+      ? sanitizeHtml(p.contentHtml)
+      : Array.isArray(p.content)
       ? p.content.map(x => `<p>${x}</p>`).join('')
       : renderMarkdown(p.content),
   })).sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -145,10 +221,10 @@ async function loadBlog(containerId, limit) {
       <a class="post-card" href="bai-viet.html?slug=${p.slug}">
         ${postThumbHTML(p)}
         <div class="post-body">
-          <span class="post-tag">${p.tag}</span>
-          <h3>${p.title}</h3>
-          <p>${p.excerpt}</p>
-          <div class="post-meta"><span>${formatDateVN(p.date)}</span><span>${p.author}</span></div>
+          <span class="post-tag">${escHtml(p.tag)}</span>
+          <h3>${escHtml(p.title)}</h3>
+          <p>${escHtml(p.excerpt)}</p>
+          <div class="post-meta"><span>${formatDateVN(p.date)}</span><span>${escHtml(p.author)}</span></div>
         </div>
       </a>
     `).join('');
@@ -176,13 +252,13 @@ async function loadSinglePost() {
   }
 
   el.innerHTML = `
-    <span class="post-tag">${post.tag}</span>
-    <h1 style="margin-top:14px;">${post.title}</h1>
-    <div class="post-meta" style="margin-bottom:28px;"><span>${formatDateVN(post.date)}</span><span>${post.author}</span></div>
+    <span class="post-tag">${escHtml(post.tag)}</span>
+    <h1 style="margin-top:14px;">${escHtml(post.title)}</h1>
+    <div class="post-meta" style="margin-bottom:28px;"><span>${formatDateVN(post.date)}</span><span>${escHtml(post.author)}</span></div>
     ${post.video ? `<div style="aspect-ratio:16/9; border:1px solid var(--line); margin-bottom:28px;">
-        <iframe width="100%" height="100%" src="${post.video}" title="${post.title}" frameborder="0"
+        <iframe width="100%" height="100%" src="${post.video}" title="${escHtml(post.title)}" frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-      </div>` : (post.cover ? `<img src="${post.cover}" alt="${post.title}" style="margin-bottom:28px; border:1px solid var(--line);">` : '')}
+      </div>` : (post.cover ? `<img src="${post.cover}" alt="${escHtml(post.title)}" style="margin-bottom:28px; border:1px solid var(--line);">` : '')}
     <div class="post-content">
       ${post.contentHtml}
       ${(post.images || []).map(src => `<img src="${src}" alt="" loading="lazy" style="margin:22px 0; border:1px solid var(--line);">`).join('')}
@@ -197,8 +273,8 @@ async function loadSinglePost() {
       <a class="post-card" href="bai-viet.html?slug=${p.slug}">
         ${postThumbHTML(p)}
         <div class="post-body">
-          <span class="post-tag">${p.tag}</span>
-          <h3>${p.title}</h3>
+          <span class="post-tag">${escHtml(p.tag)}</span>
+          <h3>${escHtml(p.title)}</h3>
           <div class="post-meta"><span>${formatDateVN(p.date)}</span></div>
         </div>
       </a>
