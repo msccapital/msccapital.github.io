@@ -20,6 +20,12 @@
   .chart-box .tradingview-widget-container{ position:relative; width:100%; height:auto !important; aspect-ratio:5/4; min-height:440px; }
   .chart-box .tradingview-widget-container__widget{ position:absolute; top:0; left:0; right:0; bottom:30px; height:auto !important; width:100% !important; }
   .chart-box .tradingview-widget-copyright{ position:absolute; left:0; right:0; bottom:0; text-align:center; }
+  /* Khung nhận định dưới biểu đồ */
+  .market-note{ border:1px solid var(--line-strong); margin-top:28px; background:var(--black); max-width:100%; }
+  .market-note-head{ padding:14px 20px; border-bottom:1px solid var(--line-strong); font-family: var(--font-display); font-weight:700; font-size:17px; }
+  .market-note-body{ padding:18px 20px 8px; }
+  .market-note-body p{ font-size:15px; line-height:1.75; margin:0 0 14px; max-width:none; }
+  .market-note-meta{ font-size:12.5px; color: var(--text-faint); padding:0 20px 16px; margin:0; max-width:none; }
   /* Ẩn mục không được chọn */
   .tab-section[hidden]{ display:none !important; }
 </style>
@@ -75,15 +81,15 @@
         </div>
       </div>
       <div class="chart-card">
-        <h3>Dầu thô Brent</h3>
+        <h3>Dầu thô Brent (giao ngay)</h3>
         <div class="chart-box">
         <div class="tradingview-widget-container" style="height:480px; width:100%;">
           <div class="tradingview-widget-container__widget" style="height:calc(100% - 30px); width:100%;"></div>
-          <div class="tradingview-widget-copyright" style="font-size:12px; padding-top:6px;"><a href="https://www.tradingview.com/symbols/TVC-UKOIL/" rel="noopener nofollow" target="_blank" style="text-decoration:underline;">Dầu thô Brent</a> theo dõi trên TradingView</div>
+          <div class="tradingview-widget-copyright" style="font-size:12px; padding-top:6px;"><a href="https://www.tradingview.com/symbols/VELOCITY-BRENT/" rel="noopener nofollow" target="_blank" style="text-decoration:underline;">Dầu thô Brent giao ngay</a> theo dõi trên TradingView</div>
           <script type="application/json" class="tv-config" data-src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js">
 {
   "autosize": true,
-  "symbol": "TVC:UKOIL",
+  "symbol": "VELOCITY:BRENT",
   "interval": "D",
   "timezone": "Asia/Ho_Chi_Minh",
   "theme": "dark",
@@ -101,6 +107,16 @@
         </div>
       </div>
     </div>
+    <!-- KHUNG NHẬN ĐỊNH: sao chép khối <div class="market-note"> ... </div> này đặt dưới bất kỳ nhóm biểu đồ nào. Sửa tiêu đề, nội dung và dòng cập nhật. -->
+    <div class="market-note">
+      <div class="market-note-head">Những yếu tố tác động đến giá dầu</div>
+      <div class="market-note-body">
+        <p>Giá dầu thô được quyết định chủ yếu bởi cung và cầu. Về nguồn cung, thị trường theo dõi sản lượng của OPEC+ và Mỹ, lượng dầu tồn kho, cũng như các căng thẳng địa chính trị, nhất là ở Trung Đông, vì khu vực này có thể làm gián đoạn dòng chảy dầu thô toàn cầu.</p>
+        <p>Về nhu cầu, giá dầu phụ thuộc vào tăng trưởng kinh tế thế giới, đặc biệt là Trung Quốc và Mỹ. Dầu được định giá bằng USD nên khi đồng USD mạnh lên, giá dầu thường chịu áp lực giảm. Với thị trường chứng khoán Việt Nam, giá dầu ảnh hưởng trước hết đến nhóm cổ phiếu dầu khí, đồng thời tác động đến chi phí vận tải và lạm phát.</p>
+      </div>
+      <p class="market-note-meta">Nội dung mang tính tham khảo chung, không phải khuyến nghị đầu tư.</p>
+    </div>
+
     <div class="head-row" style="margin-top:56px;">
       <div>
         <div class="eyebrow">Hàng hóa</div>
