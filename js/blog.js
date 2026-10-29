@@ -1,7 +1,7 @@
 /* Reads data/posts.json and renders post cards.
    To publish a new post: open data/posts.json and add a new object at the top
-   of the array (slug, title, excerpt, date, time, author, tag, cover, video, content[]).
-   "time" là giờ đăng (dạng 14:30), không bắt buộc.
+   of the array (slug, title, excerpt, date, author, tag, cover, video, content[]).
+   "date" có thể kèm giờ: "2026-10-28T14:30" (giờ Việt Nam), không bắt buộc.
    Leave "video" empty ("") for a text-only post, or paste a YouTube embed URL
    (https://www.youtube.com/embed/VIDEO_ID) to attach a clip, the way 24hmoney
    or Bò và Gấu do. */
@@ -11,17 +11,40 @@ function formatDateVN(iso) {
   return d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
-/* Giờ đăng bài (không bắt buộc): hiện dạng "14:30 · 28/10/2026" và dùng để xếp các bài cùng ngày */
+/* Ngày giờ đăng bài.
+   "date" có thể là "2026-10-28" (bài cũ, chỉ có ngày) hoặc "2026-10-28T14:30" (bài mới, có giờ Việt Nam).
+   Vẫn hỗ trợ ô "time" riêng (dạng 14:30) nếu có. Bài có giờ hiện "14:30 · 28/10/2026" và được xếp theo giờ. */
 const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
+const pad2 = (n) => String(n).padStart(2, '0');
+function postWhen(p) {
+  const raw = String(p.date || '').trim();
+  // có múi giờ (ví dụ ...Z hoặc +07:00): đổi sang giờ Việt Nam
+  if (/T\d{2}:\d{2}.*(Z|[+-]\d{2}:?\d{2})$/i.test(raw)) {
+    const d = new Date(raw);
+    if (!isNaN(d)) {
+      const f = {};
+      new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Ho_Chi_Minh', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false })
+        .formatToParts(d).forEach(x => { f[x.type] = x.value; });
+      const hh = f.hour === '24' ? '00' : f.hour;
+      return { y: +f.year, mo: +f.month, d: +f.day, hh, mm: f.minute, hasTime: true };
+    }
+  }
+  const m = raw.match(/^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2}))?/);
+  if (!m) return null;
+  let hh = m[4], mm = m[5];
+  if (hh == null && TIME_RE.test(String(p.time || '').trim())) [hh, mm] = String(p.time).trim().split(':');
+  return { y: +m[1], mo: +m[2], d: +m[3], hh: hh == null ? '' : pad2(hh), mm: hh == null ? '' : pad2(mm), hasTime: hh != null };
+}
 function formatPostDate(p) {
-  const d = formatDateVN(p.date);
-  return TIME_RE.test(p.time || '') ? `${p.time} · ${d}` : d;
+  const w = postWhen(p);
+  if (!w) return formatDateVN(p.date);
+  const d = pad2(w.d) + '/' + pad2(w.mo) + '/' + w.y;
+  return w.hasTime ? `${w.hh}:${w.mm} · ${d}` : d;
 }
 function postSortKey(p) {
-  const base = new Date(p.date).getTime() || 0;
-  if (!TIME_RE.test(p.time || '') || !/^\d{4}-\d{2}-\d{2}$/.test(String(p.date))) return base;
-  const [h, m] = p.time.split(':').map(Number);
-  return base + (h * 60 + m) * 60000;
+  const w = postWhen(p);
+  if (!w) return new Date(p.date).getTime() || 0;
+  return Date.UTC(w.y, w.mo - 1, w.d, w.hasTime ? +w.hh : 0, w.hasTime ? +w.mm : 0);
 }
 
 function postThumbHTML(post) {
