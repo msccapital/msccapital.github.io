@@ -47,16 +47,13 @@ function postSortKey(p) {
   return Date.UTC(w.y, w.mo - 1, w.d, w.hasTime ? +w.hh : 0, w.hasTime ? +w.mm : 0);
 }
 
-/* Dòng thông tin bài viết kiểu: **Tên tác giả** | 29-10-2026 - 10:12 AM */
+/* Dòng thông tin bài viết kiểu: **Tên tác giả** | 29-10-2026 - 15:26 PM */
 function formatPostWhen(p) {
   const w = postWhen(p);
   if (!w) return formatDateVN(p.date).replace(/\//g, '-');
   const d = pad2(w.d) + '-' + pad2(w.mo) + '-' + w.y;
   if (!w.hasTime) return d;
-  let h = +w.hh;
-  const ap = h >= 12 ? 'PM' : 'AM';
-  h = h % 12 || 12;
-  return `${d} - ${pad2(h)}:${w.mm} ${ap}`;
+  return `${d} - ${w.hh}:${w.mm} ${+w.hh >= 12 ? 'PM' : 'AM'}`;       // giờ 24 giờ kèm AM/PM, ví dụ 15:26 PM
 }
 function postMetaHTML(p) {
   const who = p.author ? `<strong style="color:#fff;font-weight:700;">${escHtml(p.author)}</strong> | ` : '';
