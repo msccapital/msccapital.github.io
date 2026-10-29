@@ -48,7 +48,8 @@ collections:
             summary: "{{fields.title}}"
             fields:
               - { label: Tên sách, name: title, widget: string }
-              - { label: Tác giả của cuốn sách, name: bookAuthor, widget: string, required: false }
+              - { label: Người viết review, name: author, widget: string, default: "Đội ngũ MSC Capital", hint: "Tên người viết bài review này, hiện cạnh ngày giờ giống bài blog" }
+              - { label: Tác giả của cuốn sách, name: bookAuthor, widget: string, required: false, hint: "Tên người đã viết cuốn sách (không phải người viết review)" }
               - label: Chuyên mục
                 name: category
                 widget: select
@@ -59,7 +60,7 @@ collections:
                   - { label: Sách về tài chính kế toán, value: tai-chinh-ke-toan }
                 default: hoc-dau-tu
               - { label: Đánh giá (số sao), name: rating, widget: number, value_type: float, min: 1, max: 5, step: 0.5, default: 5, required: false, hint: "Từ 1 đến 5 sao, có thể chọn 4,5" }
-              - { label: Ngày viết review, name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+              - { label: Ngày và giờ viết review, name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: "HH:mm", format: "YYYY-MM-DDTHH:mm", hint: "Bấm nút Bây giờ / Hôm nay để lấy thời điểm hiện tại, hoặc chọn và gõ tay ngày, giờ khác. Giờ Việt Nam." }
               - { label: Mô tả ngắn, name: excerpt, widget: text, hint: "1-2 câu hiện ở trang danh sách sách" }
               - { label: Nội dung review, name: review, widget: markdown, hint: "Dùng thanh công cụ để in đậm, in nghiêng, tạo tiêu đề, danh sách và chèn ảnh" }
               - { label: Ảnh bìa sách, name: cover, widget: image, required: false }
