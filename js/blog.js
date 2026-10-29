@@ -47,6 +47,9 @@ function postSortKey(p) {
   return Date.UTC(w.y, w.mo - 1, w.d, w.hasTime ? +w.hh : 0, w.hasTime ? +w.mm : 0);
 }
 
+/* Dùng cho js/books.js: đổi chuỗi ngày (kèm giờ nếu có) thành số để so sánh, sắp xếp */
+function parsePostDate(d) { return postSortKey({ date: d }); }
+
 /* Dòng thông tin bài viết kiểu: **Tên tác giả** | 29-10-2026 - 15:26 PM */
 function formatPostWhen(p) {
   const w = postWhen(p);
