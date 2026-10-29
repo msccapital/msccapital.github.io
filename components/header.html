@@ -40,12 +40,16 @@
   .nav-links .dd-box a:last-child{ border-bottom:none; }
   .nav-links .dd-box a:hover{ color:var(--text); background:var(--green-900); border-color:var(--line); }
 
-  /* ---- 1281–1559px: thu gọn để 10 mục vừa một hàng (ẩn nút "Đăng ký tư vấn" vì đã có mục Liên hệ) ---- */
+  /* ---- 1281–1559px: thu gọn để 10 mục vừa một hàng ---- */
   @media (min-width:1281px) and (max-width:1559px){
     .logo-img{ height:60px; }
     .nav{ height:84px; }
     .nav-links{ gap:12px; }
     .nav-links > a, .nav-links .dd-toggle{ font-size:14px; }
+  }
+  /* ---- 1281–1399px: màn hình hẹp, ẩn nút "Đăng ký tư vấn" vì đã có mục Liên hệ. Từ 1400px trở lên nút hiện lại.
+          Nếu thấy menu bị chật ở khoảng 1400px, tăng số 1399px lên (ví dụ 1459px). ---- */
+  @media (min-width:1281px) and (max-width:1399px){
     .nav-cta .btn-primary{ display:none; }
   }
 
