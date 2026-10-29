@@ -26,7 +26,7 @@ collections:
               - label: Chuyên mục
                 name: tag
                 widget: select
-                options: ["Kiến thức đầu tư", "Phân tích thị trường", "Video", "Tin MSC Capital"]
+                options: ["Kiến thức đầu tư", "Phân tích thị trường", "Video", "Tin MSC Capital", "Phân tích doanh nghiệp"]
                 default: "Kiến thức đầu tư"
               - { label: Mô tả ngắn, name: excerpt, widget: text, hint: "1-2 câu hiện ở trang danh sách" }
               - { label: Nội dung, name: content, widget: markdown, hint: "Dùng thanh công cụ để in đậm, in nghiêng, tạo tiêu đề, danh sách và chèn ảnh vào giữa bài" }
