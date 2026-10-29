@@ -1,6 +1,6 @@
 <style>
   /* ---- Kích thước logo & thanh menu ---- */
-  header.site .wrap{ max-width:1280px; }                    /* thanh menu rộng hơn nội dung một chút để đủ chỗ cho 9 mục */
+  header.site .wrap{ max-width:1560px; }                    /* thanh menu rộng hơn nội dung để đủ chỗ cho 10 mục */
   .logo-img{ height:72px; width:auto; max-width:100%; display:block; }   /* đổi số 72px nếu muốn logo to/nhỏ hơn */
   .nav{ height:96px; }
   .nav-links{ gap:16px; }
@@ -40,7 +40,16 @@
   .nav-links .dd-box a:last-child{ border-bottom:none; }
   .nav-links .dd-box a:hover{ color:var(--text); background:var(--green-900); border-color:var(--line); }
 
-  /* ---- Dưới 1280px: dùng nút menu ☰ để 9 mục không bị chen chúc ---- */
+  /* ---- 1281–1559px: thu gọn để 10 mục vừa một hàng (ẩn nút "Đăng ký tư vấn" vì đã có mục Liên hệ) ---- */
+  @media (min-width:1281px) and (max-width:1559px){
+    .logo-img{ height:60px; }
+    .nav{ height:84px; }
+    .nav-links{ gap:12px; }
+    .nav-links > a, .nav-links .dd-toggle{ font-size:14px; }
+    .nav-cta .btn-primary{ display:none; }
+  }
+
+  /* ---- Dưới 1280px: dùng nút menu ☰ để 10 mục không bị chen chúc ---- */
   @media (max-width:1280px){
     .logo-img{ height:60px; }
     .nav{ height:84px; }
@@ -101,6 +110,19 @@
           <div class="dd-box">
             <a href="cong-cu.html#tinh-co-tuc">Tính cổ tức</a>
             <!-- THÊM CÔNG CỤ MỚI: sao chép một dòng <a> ở trên, đổi đường dẫn (#id của công cụ) và tên -->
+          </div>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <a href="tu-sach.html" data-nav="tusach" class="dd-toggle" aria-haspopup="true">Tủ sách MSC <span class="chev" aria-hidden="true"></span></a>
+        <div class="nav-dd-menu">
+          <div class="dd-box">
+            <a href="tu-sach.html">Tất cả sách</a>
+            <a href="tu-sach.html?muc=hoc-dau-tu">Sách học đầu tư</a>
+            <a href="tu-sach.html?muc=dau-tu">Sách đầu tư</a>
+            <a href="tu-sach.html?muc=ban-hang">Sách bán hàng</a>
+            <a href="tu-sach.html?muc=tai-chinh-ke-toan">Sách về tài chính kế toán</a>
+            <!-- THÊM CHUYÊN MỤC MỚI: sao chép một dòng <a> ở trên, đổi ?muc=... (phải trùng với mã trong js/books.js và admin/config.yml) -->
           </div>
         </div>
       </div>
