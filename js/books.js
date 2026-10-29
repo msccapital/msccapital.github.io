@@ -1,10 +1,10 @@
 /* Tủ sách MSC — danh sách review sách và trang chi tiết từng cuốn.
    Dữ liệu: data/books.json (viết bằng trang quản trị /admin/ → mục "Tủ sách MSC").
-   Dùng các hàm có sẵn trong js/blog.js (escHtml, renderMarkdown, slugifyVN, formatDateVN, parsePostDate, POST_CSS),
+   Dùng các hàm có sẵn trong js/blog.js (escHtml, renderMarkdown, slugifyVN, formatDateVN, parsePostDate, postMetaHTML, POST_CSS),
    nên trang phải nạp blog.js trước books.js.
 
    CHUYÊN MỤC: muốn thêm/đổi, sửa mảng BOOK_CATS dưới đây VÀ danh sách "options" của mục Chuyên mục trong admin/config.yml
-   VÀ các liên kết ?muc=... trong components/header.html (mã "slug" phải giống nhau ở cả ba nơi). */
+   (mã "slug" phải giống nhau ở cả hai nơi). */
 
 const BOOK_CATS = [
   { slug: 'hoc-dau-tu',        label: 'Sách học đầu tư' },
@@ -157,7 +157,7 @@ async function loadBookDetail(containerId, relatedId) {
           <h1 style="margin-top:14px;">${escHtml(b.title)}</h1>
           ${b.bookAuthor ? `<p class="bk-by" style="font-size:15px;">Tác giả: ${escHtml(b.bookAuthor)}</p>` : ''}
           <div style="margin:10px 0 4px;">${bkStars(b.rating)}</div>
-          <div class="post-meta" style="margin-bottom:6px;"><span>Review ngày ${escHtml(formatDateVN(b.date))}</span></div>
+          <div class="post-meta" style="margin-bottom:6px;">${postMetaHTML({ author: b.author, date: b.date })}</div>
           ${buy}
           <div class="post-content">${renderMarkdown(b.review || b.excerpt || '')}</div>
           ${b.links.length ? `<h2 style="font-size:22px; margin-top:36px;">Mua sách</h2>${buy}` : ''}
