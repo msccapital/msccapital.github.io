@@ -26,7 +26,7 @@ collections:
               - label: Chuyên mục
                 name: tag
                 widget: select
-                options: ["Kiến thức đầu tư", "Phân tích thị trường", "Video", "Tin MSC Capital", "Phân tích doanh nghiệp"]
+                options: ["Kiến thức đầu tư", "Phân tích thị trường", "Video", "Tin MSC Capital"]
                 default: "Kiến thức đầu tư"
               - { label: Mô tả ngắn, name: excerpt, widget: text, hint: "1-2 câu hiện ở trang danh sách" }
               - { label: Nội dung, name: content, widget: markdown, hint: "Dùng thanh công cụ để in đậm, in nghiêng, tạo tiêu đề, danh sách và chèn ảnh vào giữa bài" }
@@ -34,3 +34,41 @@ collections:
               - { label: Ảnh thêm cuối bài, name: images, widget: list, field: { label: Ảnh, name: image, widget: image }, required: false }
               - { label: Video YouTube, name: video, widget: string, required: false, hint: "Dán link YouTube bình thường, ví dụ https://www.youtube.com/watch?v=..." }
               - { label: Đường dẫn (slug), name: slug, widget: string, required: false, hint: "Bỏ trống để tự tạo từ tiêu đề" }
+
+  - name: tusach
+    label: Tủ sách MSC
+    files:
+      - name: books
+        label: Review sách
+        file: data/books.json
+        fields:
+          - label: Danh sách sách
+            name: books
+            widget: list
+            summary: "{{fields.title}}"
+            fields:
+              - { label: Tên sách, name: title, widget: string }
+              - { label: Tác giả của cuốn sách, name: bookAuthor, widget: string, required: false }
+              - label: Chuyên mục
+                name: category
+                widget: select
+                options:
+                  - { label: Sách học đầu tư, value: hoc-dau-tu }
+                  - { label: Sách đầu tư, value: dau-tu }
+                  - { label: Sách bán hàng, value: ban-hang }
+                  - { label: Sách về tài chính kế toán, value: tai-chinh-ke-toan }
+                default: hoc-dau-tu
+              - { label: Đánh giá (số sao), name: rating, widget: number, value_type: float, min: 1, max: 5, step: 0.5, default: 5, required: false, hint: "Từ 1 đến 5 sao, có thể chọn 4,5" }
+              - { label: Ngày viết review, name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+              - { label: Mô tả ngắn, name: excerpt, widget: text, hint: "1-2 câu hiện ở trang danh sách sách" }
+              - { label: Nội dung review, name: review, widget: markdown, hint: "Dùng thanh công cụ để in đậm, in nghiêng, tạo tiêu đề, danh sách và chèn ảnh" }
+              - { label: Ảnh bìa sách, name: cover, widget: image, required: false }
+              - label: Liên kết mua sách
+                name: links
+                widget: list
+                required: false
+                hint: "Thêm một dòng cho mỗi nơi bán. Nút đầu tiên sẽ nổi bật nhất."
+                fields:
+                  - { label: Nơi bán, name: label, widget: string, hint: "Ví dụ: Shopee, Tiki, Fahasa" }
+                  - { label: Đường dẫn mua sách, name: url, widget: string, hint: "Dán link đầy đủ, bắt đầu bằng https://" }
+              - { label: Đường dẫn (slug), name: slug, widget: string, required: false, hint: "Bỏ trống để tự tạo từ tên sách" }
