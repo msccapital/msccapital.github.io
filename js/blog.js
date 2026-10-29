@@ -1,6 +1,7 @@
 /* Reads data/posts.json and renders post cards.
    To publish a new post: open data/posts.json and add a new object at the top
-   of the array (slug, title, excerpt, date, author, tag, cover, video, content[]).
+   of the array (slug, title, excerpt, date, time, author, tag, cover, video, content[]).
+   "time" là giờ đăng (dạng 14:30), không bắt buộc.
    Leave "video" empty ("") for a text-only post, or paste a YouTube embed URL
    (https://www.youtube.com/embed/VIDEO_ID) to attach a clip, the way 24hmoney
    or Bò và Gấu do. */
@@ -8,6 +9,19 @@
 function formatDateVN(iso) {
   const d = new Date(iso);
   return d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+/* Giờ đăng bài (không bắt buộc): hiện dạng "14:30 · 28/10/2026" và dùng để xếp các bài cùng ngày */
+const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
+function formatPostDate(p) {
+  const d = formatDateVN(p.date);
+  return TIME_RE.test(p.time || '') ? `${p.time} · ${d}` : d;
+}
+function postSortKey(p) {
+  const base = new Date(p.date).getTime() || 0;
+  if (!TIME_RE.test(p.time || '') || !/^\d{4}-\d{2}-\d{2}$/.test(String(p.date))) return base;
+  const [h, m] = p.time.split(':').map(Number);
+  return base + (h * 60 + m) * 60000;
 }
 
 function postThumbHTML(post) {
@@ -199,6 +213,7 @@ async function fetchPosts() {
   const list = Array.isArray(data) ? data : (data.posts || []);
   return list.map(p => ({
     ...p,
+    time: TIME_RE.test(String(p.time || '').trim()) ? String(p.time).trim() : '',
     slug: p.slug || slugifyVN(p.title || ''),
     video: toEmbedUrl(p.video || ''),
     cover: (p.cover || '').replace(/^\/+/, ''),
@@ -208,7 +223,7 @@ async function fetchPosts() {
       : Array.isArray(p.content)
       ? p.content.map(x => `<p>${x}</p>`).join('')
       : renderMarkdown(p.content),
-  })).sort((a, b) => new Date(b.date) - new Date(a.date));
+  })).sort((a, b) => postSortKey(b) - postSortKey(a));
 }
 
 async function loadBlog(containerId, limit) {
@@ -224,7 +239,7 @@ async function loadBlog(containerId, limit) {
           <span class="post-tag">${escHtml(p.tag)}</span>
           <h3>${escHtml(p.title)}</h3>
           <p>${escHtml(p.excerpt)}</p>
-          <div class="post-meta"><span>${formatDateVN(p.date)}</span><span>${escHtml(p.author)}</span></div>
+          <div class="post-meta"><span>${formatPostDate(p)}</span><span>${escHtml(p.author)}</span></div>
         </div>
       </a>
     `).join('');
@@ -254,7 +269,7 @@ async function loadSinglePost() {
   el.innerHTML = `
     <span class="post-tag">${escHtml(post.tag)}</span>
     <h1 style="margin-top:14px;">${escHtml(post.title)}</h1>
-    <div class="post-meta" style="margin-bottom:28px;"><span>${formatDateVN(post.date)}</span><span>${escHtml(post.author)}</span></div>
+    <div class="post-meta" style="margin-bottom:28px;"><span>${formatPostDate(post)}</span><span>${escHtml(post.author)}</span></div>
     ${post.video ? `<div style="aspect-ratio:16/9; border:1px solid var(--line); margin-bottom:28px;">
         <iframe width="100%" height="100%" src="${post.video}" title="${escHtml(post.title)}" frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -275,7 +290,7 @@ async function loadSinglePost() {
         <div class="post-body">
           <span class="post-tag">${escHtml(p.tag)}</span>
           <h3>${escHtml(p.title)}</h3>
-          <div class="post-meta"><span>${formatDateVN(p.date)}</span></div>
+          <div class="post-meta"><span>${formatPostDate(p)}</span></div>
         </div>
       </a>
     `).join('');
