@@ -47,6 +47,22 @@ function postSortKey(p) {
   return Date.UTC(w.y, w.mo - 1, w.d, w.hasTime ? +w.hh : 0, w.hasTime ? +w.mm : 0);
 }
 
+/* Dòng thông tin bài viết kiểu: **Tên tác giả** | 29-10-2026 - 10:12 AM */
+function formatPostWhen(p) {
+  const w = postWhen(p);
+  if (!w) return formatDateVN(p.date).replace(/\//g, '-');
+  const d = pad2(w.d) + '-' + pad2(w.mo) + '-' + w.y;
+  if (!w.hasTime) return d;
+  let h = +w.hh;
+  const ap = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return `${d} - ${pad2(h)}:${w.mm} ${ap}`;
+}
+function postMetaHTML(p) {
+  const who = p.author ? `<strong style="color:#fff;font-weight:700;">${escHtml(p.author)}</strong> | ` : '';
+  return `<span>${who}${formatPostWhen(p)}</span>`;
+}
+
 function postThumbHTML(post) {
   if (post.video) {
     const id = post.video.split('/embed/')[1];
@@ -262,7 +278,7 @@ async function loadBlog(containerId, limit) {
           <span class="post-tag">${escHtml(p.tag)}</span>
           <h3>${escHtml(p.title)}</h3>
           <p>${escHtml(p.excerpt)}</p>
-          <div class="post-meta"><span>${formatPostDate(p)}</span><span>${escHtml(p.author)}</span></div>
+          <div class="post-meta">${postMetaHTML(p)}</div>
         </div>
       </a>
     `).join('');
@@ -292,7 +308,7 @@ async function loadSinglePost() {
   el.innerHTML = `
     <span class="post-tag">${escHtml(post.tag)}</span>
     <h1 style="margin-top:14px;">${escHtml(post.title)}</h1>
-    <div class="post-meta" style="margin-bottom:28px;"><span>${formatPostDate(post)}</span><span>${escHtml(post.author)}</span></div>
+    <div class="post-meta" style="margin-bottom:28px;">${postMetaHTML(post)}</div>
     ${post.video ? `<div style="aspect-ratio:16/9; border:1px solid var(--line); margin-bottom:28px;">
         <iframe width="100%" height="100%" src="${post.video}" title="${escHtml(post.title)}" frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -313,7 +329,7 @@ async function loadSinglePost() {
         <div class="post-body">
           <span class="post-tag">${escHtml(p.tag)}</span>
           <h3>${escHtml(p.title)}</h3>
-          <div class="post-meta"><span>${formatPostDate(p)}</span></div>
+          <div class="post-meta">${postMetaHTML(p)}</div>
         </div>
       </a>
     `).join('');
