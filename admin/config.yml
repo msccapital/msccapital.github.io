@@ -21,8 +21,7 @@ collections:
             summary: "{{fields.title}}"
             fields:
               - { label: Tiêu đề, name: title, widget: string }
-              - { label: Ngày đăng, name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
-              - { label: Giờ đăng, name: time, widget: string, required: false, pattern: ['^([01]\d|2[0-3]):[0-5]\d$', "Nhập giờ đúng dạng HH:MM, ví dụ 08:30"], hint: "Giờ Việt Nam, dạng 14:30. Bỏ trống nếu không cần." }
+              - { label: Ngày và giờ đăng, name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: "HH:mm", format: "YYYY-MM-DDTHH:mm", hint: "Bấm nút Bây giờ / Hôm nay để lấy thời điểm hiện tại, hoặc chọn và gõ tay ngày, giờ khác. Giờ Việt Nam." }
               - { label: Tác giả, name: author, widget: string, default: "Đội ngũ MSC Capital" }
               - label: Chuyên mục
                 name: tag
