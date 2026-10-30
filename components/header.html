@@ -1,12 +1,20 @@
 <style>
-  /* ---- Kích thước logo & thanh menu ---- */
-  header.site .wrap{ max-width:1560px; }                    /* thanh menu rộng hơn nội dung để đủ chỗ cho 10 mục */
-  .logo-img{ height:72px; width:auto; max-width:100%; display:block; }   /* đổi số 72px nếu muốn logo to/nhỏ hơn */
-  .nav{ height:96px; }
-  .nav-links{ gap:16px; }
-  .nav-links a{ white-space:nowrap; }
+  /* ================= HEADER KIỂU HAI HÀNG =================
+     Hàng 1: logo, ngày giờ, nút "Đăng ký tư vấn", nút chọn ngôn ngữ.
+     Hàng 2: thanh menu rộng hết chiều ngang. */
+  header.site .wrap{ max-width:1560px; }
 
-  /* ---- Nút chọn ngôn ngữ (biểu tượng 🌐 màu trắng) ---- */
+  /* ---- Hàng 1 ---- */
+  .hdr-top{ border-bottom:1px solid var(--line); }
+  .hdr-top-in{ display:flex; align-items:center; gap:18px; height:80px; }
+  .logo{ display:flex; align-items:center; flex:none; }
+  .logo-img{ height:60px; width:auto; max-width:100%; display:block; }   /* đổi 60px nếu muốn logo to/nhỏ hơn */
+  .hdr-clock{ font-family:var(--font-mono); font-size:13px; color:var(--text-faint); white-space:nowrap; }
+  .hdr-sp{ flex:1; }
+  .nav-cta{ display:flex; align-items:center; gap:12px; }
+  .nav-cta .btn{ white-space:nowrap; }
+
+  /* ---- Nút chọn ngôn ngữ (đứng sau nút Đăng ký tư vấn) ---- */
   .lang-switch{ position:relative; }
   .lang-btn{ width:42px; height:42px; display:inline-flex; align-items:center; justify-content:center; padding:0;
              background:none; color:#fff; border:1px solid var(--line-strong); border-radius:2px; cursor:pointer; }
@@ -26,109 +34,123 @@
   iframe.skiptranslate, .goog-te-banner-frame, #goog-gt-tt, .goog-te-balloon-frame{ display:none !important; }
   .goog-text-highlight{ background:none !important; box-shadow:none !important; }
 
-  /* ---- Menu xổ xuống (Tin tức, Biểu đồ, Công cụ hỗ trợ): rê chuột vào để mở ---- */
-  .nav-dropdown{ position:relative; }
-  .dd-toggle{ display:inline-flex; align-items:center; gap:6px; }
+  /* ---- Hàng 2: thanh menu ---- */
+  .hdr-nav{ background:var(--panel-solid); border-bottom:1px solid var(--line); }
+  .nav-links{ display:flex; align-items:stretch; gap:0; flex-wrap:nowrap; }
+  .nav-links > a,
+  .nav-links > .nav-dropdown > a{ display:flex; align-items:center; height:50px; padding:0 18px; font-size:15px; color:var(--text-muted);
+                                  white-space:nowrap; border-bottom:2px solid transparent; }
+  .nav-links > a:hover,
+  .nav-links > .nav-dropdown > a:hover{ color:var(--text); }
+  .nav-links a.active, .nav-links a.is-active, .nav-links a.on, .nav-links a.current, .nav-links a[aria-current="page"]{
+    background:var(--green-900); color:#fff; border-bottom-color:var(--green-400); }
+
+  /* ---- Menu xổ xuống: rê chuột vào để mở ---- */
+  .nav-dropdown{ position:relative; display:flex; }
+  .dd-toggle{ gap:6px; }
   .chev{ display:inline-block; width:0; height:0; vertical-align:middle;
          border-left:4px solid transparent; border-right:4px solid transparent; border-top:5px solid currentColor;
          transition:transform .15s ease; }
   .nav-dropdown:hover .chev, .nav-dropdown:focus-within .chev{ transform:rotate(180deg); }
-  .nav-dd-menu{ position:absolute; top:100%; left:-16px; padding-top:14px; display:none; z-index:60; }
+  .nav-dd-menu{ position:absolute; top:100%; left:0; display:none; z-index:60; }
   .nav-dropdown:hover .nav-dd-menu, .nav-dropdown:focus-within .nav-dd-menu{ display:block; }
-  .dd-box{ min-width:210px; background:var(--panel-solid); border:1px solid var(--line-strong); box-shadow:0 12px 28px rgba(0,0,0,.45); }
-  .nav-links .dd-box a{ display:block; padding:12px 18px; border-bottom:1px solid var(--line); font-size:14px; color:var(--text-muted); white-space:nowrap; }
+  .dd-box{ min-width:220px; background:var(--panel-solid); border:1px solid var(--line-strong); border-top:2px solid var(--green-400); box-shadow:0 12px 28px rgba(0,0,0,.45); }
+  .nav-links .dd-box a{ display:block; height:auto; padding:12px 18px; border-bottom:1px solid var(--line); font-size:14px; color:var(--text-muted); white-space:nowrap; background:none; }
   .nav-links .dd-box a:last-child{ border-bottom:none; }
-  .nav-links .dd-box a:hover{ color:var(--text); background:var(--green-900); border-color:var(--line); }
+  .nav-links .dd-box a:hover{ color:var(--text); background:var(--green-900); }
 
-  /* ---- 1281–1559px: thu gọn để 10 mục vừa một hàng ---- */
-  @media (min-width:1281px) and (max-width:1559px){
-    .logo-img{ height:60px; }
-    .nav{ height:84px; }
-    .nav-links{ gap:12px; }
-    .nav-links > a, .nav-links .dd-toggle{ font-size:14px; }
-  }
-  /* ---- 1281–1399px: màn hình hẹp, ẩn nút "Đăng ký tư vấn" vì đã có mục Liên hệ. Từ 1400px trở lên nút hiện lại.
-          Nếu thấy menu bị chật ở khoảng 1400px, tăng số 1399px lên (ví dụ 1459px). ---- */
-  @media (min-width:1281px) and (max-width:1399px){
-    .nav-cta .btn-primary{ display:none; }
-  }
+  .nav-toggle{ display:none; }
 
-  /* ---- Dưới 1280px: dùng nút menu ☰ để 10 mục không bị chen chúc ---- */
-  @media (max-width:1280px){
-    .logo-img{ height:60px; }
-    .nav{ height:84px; }
-    .nav-links{ position:fixed; inset:84px 0 auto 0; background:var(--black); border-bottom:1px solid var(--line);
-                flex-direction:column; align-items:flex-start; gap:0; padding:8px 24px 20px;
-                max-height:calc(100vh - 84px); overflow-y:auto;
-                transform:translateY(-8px); opacity:0; pointer-events:none; transition:transform .18s ease, opacity .18s ease; }
-    .nav-links.open{ transform:translateY(0); opacity:1; pointer-events:auto; }
-    .nav-links a{ width:100%; padding:12px 0; border-bottom:1px solid var(--line); }
+  /* ---- Màn hình hẹp (dưới 1100px): dùng nút menu ☰ ---- */
+  @media (max-width:1100px){
+    .hdr-top-in{ height:72px; }
+    .logo-img{ height:50px; }
     .nav-toggle{ display:block; }
-    .nav-cta .btn-primary{ display:none; }
-    .nav-dropdown{ width:100%; }
+    .hdr-nav{ border:0; background:none; }
+    .nav-links{ position:fixed; inset:72px 0 auto 0; background:var(--black); border-bottom:1px solid var(--line);
+                flex-direction:column; align-items:stretch; padding:8px 24px 20px;
+                max-height:calc(100vh - 72px); overflow-y:auto;
+                transform:translateY(-8px); opacity:0; pointer-events:none; transition:transform .18s ease, opacity .18s ease; z-index:60; }
+    .nav-links.open{ transform:translateY(0); opacity:1; pointer-events:auto; }
+    .nav-links > a, .nav-links > .nav-dropdown > a{ height:auto; padding:14px 0; border-bottom:1px solid var(--line); width:100%; }
+    .nav-links a.active, .nav-links a.is-active, .nav-links a.on, .nav-links a.current, .nav-links a[aria-current="page"]{ background:none; color:var(--green-400); }
+    .nav-dropdown{ display:block; width:100%; }
     .chev{ display:none; }
-    .nav-dd-menu{ position:static; display:block; padding:0; }
+    .nav-dd-menu{ position:static; display:block; }
     .dd-box{ min-width:0; background:none; border:none; box-shadow:none; }
     .nav-links .dd-box a{ padding:12px 0 12px 18px; }
+    .hdr-clock{ display:none; }
   }
-  @media (max-width:900px){
-    .logo-img{ height:50px; }
-    .nav{ height:76px; }
-    .nav-links{ inset:76px 0 auto 0; max-height:calc(100vh - 76px); }
+  @media (max-width:560px){
+    .nav-cta .btn-primary{ display:none; }
   }
 </style>
 <header class="site">
-  <div class="wrap nav">
-    <a href="index.html" class="logo" translate="no" aria-label="MSC Capital — Trang chủ">
-      <img src="assets/img/logo-full.png" alt="MSC Capital" class="logo-img">
-    </a>
-    <nav class="nav-links" id="navLinks">
-      <a href="index.html" data-nav="home">Trang chủ</a>
-      <a href="dich-vu.html" data-nav="dichvu">Dịch vụ</a>
-      <a href="uu-dai.html" data-nav="uudai">Ưu đãi</a>
-      <div class="nav-dropdown">
-        <a href="tin-tuc.html" data-nav="tintuc" class="dd-toggle" aria-haspopup="true">Tin tức <span class="chev" aria-hidden="true"></span></a>
-        <div class="nav-dd-menu">
-          <div class="dd-box">
-            <a href="tin-tuc.html">Tin thị trường</a>
-            <a href="lich-kinh-te.html">Lịch kinh tế</a>
-            <!-- THÊM MỤC MỚI: sao chép một dòng <a> ở trên, đổi đường dẫn và tên -->
-          </div>
+  <div class="hdr-top">
+    <div class="wrap hdr-top-in">
+      <a href="index.html" class="logo" translate="no" aria-label="MSC Capital — Trang chủ">
+        <img src="assets/img/logo-full.png" alt="MSC Capital" class="logo-img">
+      </a>
+      <span class="hdr-clock" id="hdrClock" translate="no"></span>
+      <span class="hdr-sp"></span>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-sm" href="lien-he.html">Đăng ký tư vấn</a>
+        <div class="lang-switch" translate="no">
+          <button type="button" class="lang-btn" id="langBtn" aria-label="Chọn ngôn ngữ / Language" aria-haspopup="true" aria-expanded="false" title="Ngôn ngữ / Language">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19"/><path d="M12 2.5c2.6 2.7 4 6 4 9.5s-1.4 6.8-4 9.5c-2.6-2.7-4-6-4-9.5s1.4-6.8 4-9.5z"/></svg>
+          </button>
+          <div class="lang-menu" id="langMenu" hidden></div>
         </div>
+        <button class="nav-toggle" id="navToggle" aria-label="Mở menu" aria-expanded="false">☰</button>
       </div>
-      <a href="blog.html" data-nav="blog">Blog</a>
-      <a href="tuyen-dung.html" data-nav="tuyendung">Tuyển dụng</a>
-      <div class="nav-dropdown">
-        <a href="bieu-do.html" data-nav="bieudo" class="dd-toggle" aria-haspopup="true">Biểu đồ <span class="chev" aria-hidden="true"></span></a>
-        <div class="nav-dd-menu">
-          <div class="dd-box">
-            <a href="bieu-do.html#hang-hoa">Hàng hóa</a>
-            <a href="bieu-do.html#bieu-do-kinh-te">Biểu đồ kinh tế</a>
-            <!-- THÊM MỤC MỚI: sao chép một dòng <a> ở trên, đổi đường dẫn (#id của mục trong bieu-do.html) và tên -->
-          </div>
-        </div>
-      </div>
-      <div class="nav-dropdown">
-        <a href="cong-cu.html" data-nav="congcu" class="dd-toggle" aria-haspopup="true">Công cụ hỗ trợ <span class="chev" aria-hidden="true"></span></a>
-        <div class="nav-dd-menu">
-          <div class="dd-box">
-            <a href="cong-cu.html#tinh-co-tuc">Tính cổ tức</a>
-            <!-- THÊM CÔNG CỤ MỚI: sao chép một dòng <a> ở trên, đổi đường dẫn (#id của công cụ) và tên -->
-          </div>
-        </div>
-      </div>
-      <a href="tu-sach.html" data-nav="tusach">Tủ sách MSC</a>
-      <a href="lien-he.html" data-nav="lienhe">Liên hệ</a>
-    </nav>
-    <div class="nav-cta">
-      <a class="btn btn-primary btn-sm" href="lien-he.html">Đăng ký tư vấn</a>
-      <div class="lang-switch" translate="no">
-        <button type="button" class="lang-btn" id="langBtn" aria-label="Chọn ngôn ngữ / Language" aria-haspopup="true" aria-expanded="false" title="Ngôn ngữ / Language">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19"/><path d="M12 2.5c2.6 2.7 4 6 4 9.5s-1.4 6.8-4 9.5c-2.6-2.7-4-6-4-9.5s1.4-6.8 4-9.5z"/></svg>
-        </button>
-        <div class="lang-menu" id="langMenu" hidden></div>
-      </div>
-      <button class="nav-toggle" id="navToggle" aria-label="Mở menu" aria-expanded="false">☰</button>
     </div>
   </div>
+  <div class="hdr-nav">
+    <div class="wrap">
+      <nav class="nav-links" id="navLinks">
+        <a href="index.html" data-nav="home">Trang chủ</a>
+        <a href="dich-vu.html" data-nav="dichvu">Dịch vụ</a>
+        <a href="uu-dai.html" data-nav="uudai">Ưu đãi</a>
+        <a href="thi-truong.html" data-nav="thitruong">Thị trường</a>
+        <div class="nav-dropdown">
+          <a href="tin-tuc.html" data-nav="tintuc" class="dd-toggle" aria-haspopup="true">Tin tức <span class="chev" aria-hidden="true"></span></a>
+          <div class="nav-dd-menu">
+            <div class="dd-box">
+              <a href="tin-tuc.html">Tin thị trường</a>
+              <a href="lich-kinh-te.html">Lịch kinh tế</a>
+              <!-- THÊM MỤC MỚI: sao chép một dòng <a> ở trên, đổi đường dẫn và tên -->
+            </div>
+          </div>
+        </div>
+        <a href="blog.html" data-nav="blog">Blog</a>
+        <div class="nav-dropdown">
+          <a href="bieu-do.html" data-nav="bieudo" class="dd-toggle" aria-haspopup="true">Biểu đồ <span class="chev" aria-hidden="true"></span></a>
+          <div class="nav-dd-menu">
+            <div class="dd-box">
+              <a href="bieu-do.html#hang-hoa">Hàng hóa</a>
+              <a href="bieu-do.html#bieu-do-kinh-te">Biểu đồ kinh tế</a>
+              <!-- THÊM MỤC MỚI: sao chép một dòng <a> ở trên, đổi đường dẫn (#id của mục trong bieu-do.html) và tên -->
+            </div>
+          </div>
+        </div>
+        <div class="nav-dropdown">
+          <a href="cong-cu.html" data-nav="congcu" class="dd-toggle" aria-haspopup="true">Công cụ hỗ trợ <span class="chev" aria-hidden="true"></span></a>
+          <div class="nav-dd-menu">
+            <div class="dd-box">
+              <a href="cong-cu.html#tinh-co-tuc">Tính cổ tức</a>
+              <!-- THÊM CÔNG CỤ MỚI: sao chép một dòng <a> ở trên, đổi đường dẫn (#id của công cụ) và tên -->
+            </div>
+          </div>
+        </div>
+        <a href="tu-sach.html" data-nav="tusach">Tủ sách MSC</a>
+        <a href="tuyen-dung.html" data-nav="tuyendung">Tuyển dụng</a>
+        <a href="lien-he.html" data-nav="lienhe">Liên hệ</a>
+      </nav>
+    </div>
+  </div>
+  <!-- Đồng hồ ngày giờ ở hàng 1. Đoạn mã chạy trong thuộc tính onload của ảnh 1x1 điểm ảnh dưới đây,
+       vì trình nạp header bằng innerHTML không chạy thẻ <script>. -->
+  <img alt="" width="1" height="1" style="position:absolute;opacity:0;pointer-events:none"
+       src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+       onload="(function(){var e=document.getElementById('hdrClock');if(!e||e.dataset.on)return;e.dataset.on='1';var f=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Ho_Chi_Minh',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});function t(){e.textContent=f.format(new Date()).replace(',','')}t();setInterval(t,1000)})()">
 </header>
