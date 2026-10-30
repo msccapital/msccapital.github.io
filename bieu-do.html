@@ -25,6 +25,7 @@
   .market-note-head{ padding:14px 20px; border-bottom:1px solid var(--line-strong); font-family: var(--font-display); font-weight:700; font-size:17px; }
   .market-note-body{ padding:18px 20px 8px; }
   .market-note-body p{ font-size:15px; line-height:1.75; margin:0 0 14px; max-width:none; }
+  .market-note[hidden]{ display:none !important; }
   .market-note-meta{ font-size:12.5px; color: var(--text-faint); padding:0 20px 16px; margin:0; max-width:none; }
   /* Ẩn mục không được chọn */
   .tab-section[hidden]{ display:none !important; }
@@ -81,15 +82,15 @@
         </div>
       </div>
       <div class="chart-card">
-        <h3>Dầu thô Brent (giao ngay)</h3>
+        <h3>Dầu thô Brent (hợp đồng tương lai)</h3>
         <div class="chart-box">
         <div class="tradingview-widget-container" style="height:480px; width:100%;">
           <div class="tradingview-widget-container__widget" style="height:calc(100% - 30px); width:100%;"></div>
-          <div class="tradingview-widget-copyright" style="font-size:12px; padding-top:6px;"><a href="https://www.tradingview.com/symbols/VELOCITY-BRENT/" rel="noopener nofollow" target="_blank" style="text-decoration:underline;">Dầu thô Brent giao ngay</a> theo dõi trên TradingView</div>
+          <div class="tradingview-widget-copyright" style="font-size:12px; padding-top:6px;"><a href="https://www.tradingview.com/symbols/ICEEUR-BRN1!/" rel="noopener nofollow" target="_blank" style="text-decoration:underline;">Dầu thô Brent (hợp đồng tương lai)</a> theo dõi trên TradingView</div>
           <script type="application/json" class="tv-config" data-src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js">
 {
   "autosize": true,
-  "symbol": "VELOCITY:BRENT",
+  "symbol": "ICEEUR:BRN1!",
   "interval": "D",
   "timezone": "Asia/Ho_Chi_Minh",
   "theme": "dark",
@@ -107,8 +108,8 @@
         </div>
       </div>
     </div>
-    <!-- KHUNG NHẬN ĐỊNH: sao chép khối <div class="market-note"> ... </div> này đặt dưới bất kỳ nhóm biểu đồ nào. Sửa tiêu đề, nội dung và dòng cập nhật. -->
-    <div class="market-note">
+    <!-- KHUNG PHÂN TÍCH: nội dung dưới đây chỉ là bản dự phòng; khi data/phan-tich.json có dữ liệu cho khóa "dau" thì được thay tự động. -->
+    <div class="market-note" data-note="dau">
       <div class="market-note-head">Những yếu tố tác động đến giá dầu</div>
       <div class="market-note-body">
         <p>Giá dầu thô được quyết định chủ yếu bởi cung và cầu. Về nguồn cung, thị trường theo dõi sản lượng của OPEC+ và Mỹ, lượng dầu tồn kho, cũng như các căng thẳng địa chính trị, nhất là ở Trung Đông, vì khu vực này có thể làm gián đoạn dòng chảy dầu thô toàn cầu.</p>
@@ -204,6 +205,12 @@
         </div>
       </div>
     </div>
+    <div class="market-note" data-note="kim-loai" hidden>
+      <div class="market-note-head"></div>
+      <div class="market-note-body"></div>
+      <p class="market-note-meta"></p>
+    </div>
+
     <div class="head-row" style="margin-top:56px;">
       <div>
         <div class="eyebrow">Hàng hóa</div>
@@ -238,6 +245,11 @@
         </div>
         </div>
       </div>
+    </div>
+    <div class="market-note" data-note="nong-san" hidden>
+      <div class="market-note-head"></div>
+      <div class="market-note-body"></div>
+      <p class="market-note-meta"></p>
     </div>
     <p class="chart-note">Biểu đồ do TradingView cung cấp. Dữ liệu mang tính tham khảo, có thể chậm so với thị trường, không phải khuyến nghị đầu tư.</p>
     <!-- THÊM BIỂU ĐỒ HÀNG HÓA MỚI: sao chép một khối <div class="chart-card"> ... </div> ở trên, đổi "symbol" (ví dụ TVC:GOLD cho vàng) và tên. -->
@@ -308,6 +320,11 @@
         </div>
       </div>
     </div>
+    <div class="market-note" data-note="kinh-te" hidden>
+      <div class="market-note-head"></div>
+      <div class="market-note-body"></div>
+      <p class="market-note-meta"></p>
+    </div>
     <p class="chart-note">Biểu đồ do TradingView cung cấp. Dữ liệu mang tính tham khảo, có thể chậm so với thị trường, không phải khuyến nghị đầu tư.</p>
     <!-- THÊM BIỂU ĐỒ KINH TẾ MỚI Ở ĐÂY: sao chép một khối <div class="chart-card"> ... </div> ở trên và đổi "symbol". -->
   </div>
@@ -353,6 +370,43 @@
 
   window.addEventListener('hashchange', show);
   show();
+})();
+</script>
+
+<script>
+/* Nạp phân tích hằng ngày từ data/phan-tich.json (do GitHub Actions cập nhật).
+   Khung nào có dữ liệu thì được thay nội dung; khung nào không có thì giữ nguyên (hoặc ẩn). */
+(function () {
+  fetch('data/phan-tich.json?v=' + Date.now())
+    .then(function (r) { return r.ok ? r.json() : {}; })
+    .then(function (data) {
+      Object.keys(data || {}).forEach(function (key) {
+        var d = data[key];
+        var box = document.querySelector('.market-note[data-note="' + key + '"]');
+        if (!box || !d || !d.title || !d.paragraphs || !d.paragraphs.length) return;
+        box.querySelector('.market-note-head').textContent = d.title;
+        var body = box.querySelector('.market-note-body');
+        body.innerHTML = '';
+        d.paragraphs.forEach(function (t) {
+          var p = document.createElement('p'); p.textContent = t; body.appendChild(p);
+        });
+        var meta = box.querySelector('.market-note-meta');
+        meta.innerHTML = '';
+        var line = 'Cập nhật: ' + (d.updated || '') + '. Nội dung mang tính tham khảo, không phải khuyến nghị đầu tư.';
+        meta.appendChild(document.createTextNode(line));
+        if (d.sources && d.sources.length) {
+          meta.appendChild(document.createTextNode(' Nguồn: '));
+          d.sources.forEach(function (s, i) {
+            if (i) meta.appendChild(document.createTextNode(', '));
+            var a = document.createElement('a');
+            a.href = s.url; a.textContent = s.title; a.target = '_blank'; a.rel = 'noopener nofollow';
+            meta.appendChild(a);
+          });
+        }
+        box.hidden = false;
+      });
+    })
+    .catch(function () {});
 })();
 </script>
 </body>
