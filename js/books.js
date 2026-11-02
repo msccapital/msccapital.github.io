@@ -19,24 +19,24 @@ const BOOKS_CSS = `
 .bk-chips a:hover{ border-color:var(--green-400); color:var(--text); }
 .bk-chips a.on{ background:var(--orange); border-color:var(--orange); color:#fff8f3; }
 .bk-chips a span{ opacity:.7; margin-left:6px; font-family:var(--font-mono); font-size:12px; }
-.bk-card{ border:1px solid var(--line); display:flex; flex-direction:column; background:linear-gradient(180deg,var(--panel-alt),transparent 140%); transition:border-color .15s ease; }
+.bk-card{ border:1px solid var(--line); display:flex; flex-direction:column; background:var(--black); transition:border-color .15s ease; min-width:0; }
 .bk-card:hover{ border-color:var(--green-400); }
-.bk-thumb{ aspect-ratio:4/5; background:var(--panel-solid); display:flex; align-items:center; justify-content:center; padding:18px; border-bottom:1px solid var(--line); overflow:hidden; }
-.bk-thumb img{ max-width:100%; max-height:100%; object-fit:contain; box-shadow:0 10px 26px rgba(0,0,0,.5); }
-.bk-ph{ font-family:var(--font-display); font-weight:800; font-size:20px; line-height:1.25; color:var(--green-200); text-align:center; padding:0 12px; }
-.bk-body{ padding:20px 22px 24px; display:flex; flex-direction:column; gap:8px; flex:1; }
-.bk-body h3{ font-size:19px; line-height:1.3; margin:0; }
-.bk-by{ font-size:13.5px; color:var(--text-faint); margin:0; }
-.bk-ex{ font-size:14.5px; margin:4px 0 0; }
-.bk-more{ margin-top:auto; padding-top:10px; color:var(--green-400); font-size:14px; }
+.bk-thumb{ aspect-ratio:16/9; background:var(--panel-solid); overflow:hidden; display:flex; align-items:center; justify-content:center; border-bottom:1px solid var(--line); }
+.bk-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+.bk-ph{ font-family:var(--font-display); font-weight:800; font-size:20px; line-height:1.25; color:var(--green-200); text-align:center; padding:0 18px; }
+.bk-body{ padding:24px 26px 28px; display:flex; flex-direction:column; gap:10px; flex:1; }
+.bk-top{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; font-size:14px; color:var(--orange-400); }
+.bk-body h3{ font-size:22px; line-height:1.35; margin:2px 0 0; }
+.bk-by{ font-size:14px; color:var(--text-faint); margin:0; max-width:none; }
+.bk-ex{ font-size:16px; line-height:1.65; margin:2px 0 0; max-width:none; }
+.bk-more{ margin-top:auto; padding-top:14px; color:var(--green-400); font-size:15px; }
 .bk-stars{ font-size:15px; color:var(--orange-400); letter-spacing:1px; white-space:nowrap; }
 .bk-stars .off{ color:var(--line-strong); }
 .bk-stars .num{ font-family:var(--font-mono); font-size:12.5px; color:var(--text-muted); letter-spacing:0; margin-left:6px; }
-.bk-detail{ display:grid; grid-template-columns:300px 1fr; gap:44px; align-items:start; }
-.bk-detail .bk-thumb{ aspect-ratio:3/4; border:1px solid var(--line); position:sticky; top:110px; }
+.bk-detail{ display:block; max-width:860px; }
+.bk-detail .bk-thumb{ border:1px solid var(--line); margin-bottom:28px; }
 .bk-buy{ display:flex; flex-wrap:wrap; gap:10px; margin:22px 0; }
 .bk-note{ font-size:12.5px; color:var(--text-faint); max-width:68ch; margin:0 0 26px; }
-@media (max-width:820px){ .bk-detail{ grid-template-columns:1fr; gap:26px; } .bk-detail .bk-thumb{ position:static; max-width:300px; } }
 `;
 
 /* ---------- dữ liệu ---------- */
@@ -79,13 +79,18 @@ function bkThumb(b) {
     : `<div class="bk-ph">${escHtml(b.title)}</div>`}</div>`;
 }
 
+function bkDate(b) {
+  const w = (typeof postWhen === 'function') ? postWhen({ date: b.date }) : null;
+  return w ? `${w.d}/${w.mo}/${w.y}` : '';
+}
+
 function bkCardHTML(b) {
   return `<a class="bk-card" href="sach.html?slug=${encodeURIComponent(b.slug)}">
     ${bkThumb(b)}
     <div class="bk-body">
-      <span class="post-tag">${escHtml(bkCatLabel(b.category))}</span>
+      <div class="bk-top"><span>${escHtml(bkCatLabel(b.category))}</span><span>${escHtml(bkDate(b))}</span></div>
       <h3>${escHtml(b.title)}</h3>
-      ${b.bookAuthor ? `<p class="bk-by">${escHtml(b.bookAuthor)}</p>` : ''}
+      ${b.bookAuthor ? `<p class="bk-by">Tác giả: ${escHtml(b.bookAuthor)}</p>` : ''}
       ${bkStars(b.rating)}
       ${b.excerpt ? `<p class="bk-ex">${escHtml(b.excerpt)}</p>` : ''}
       <span class="bk-more">Đọc review →</span>
