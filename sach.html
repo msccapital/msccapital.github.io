@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Review sách — MSC Capital</title>
+<meta name="description" content="Review chi tiết một cuốn sách do MSC Capital đọc, kèm liên kết mua sách.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="tusach">
+
+<div id="site-header"></div>
+
+<section style="padding-top:56px;">
+  <div class="wrap">
+    <div id="book-detail"><p class="news-empty">Đang tải...</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head-row">
+      <div>
+        <div class="eyebrow">Tủ sách MSC</div>
+        <h2>Sách khác bạn có thể quan tâm</h2>
+      </div>
+    </div>
+    <div id="related-books" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:24px;"></div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="js/include.js"></script>
+<script src="js/blog.js"></script>
+<script src="js/books.js"></script>
+<script>loadBookDetail('book-detail', 'related-books');</script>
+</body>
+</html>
