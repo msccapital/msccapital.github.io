@@ -220,13 +220,11 @@
         <div class="eyebrow">Thị trường</div>
         <h2>Diễn biến thị trường</h2>
       </div>
-      <p>Cổ phiếu giảm mạnh, khối ngoại mua ròng và hoạt động của các quỹ.</p>
+      <p>Cổ phiếu giảm mạnh và hoạt động của các quỹ.</p>
     </div>
-    <div class="dg-grid3" style="margin-top:0">
+    <div class="dg-grid2" style="margin-top:0">
       <div class="dg-box"><h3>Top giảm giá</h3>
         <table><thead><tr><th>Mã</th><th class="r">% giá</th><th class="r">KL giao dịch</th></tr></thead><tbody id="t-giam"></tbody></table></div>
-      <div class="dg-box"><h3>Top khối ngoại mua ròng</h3>
-        <table><thead><tr><th>Mã</th><th class="r">Giá trị (tỷ đồng)</th></tr></thead><tbody id="t-ngoai"></tbody></table></div>
       <div class="dg-box"><h3>Hoạt động quỹ</h3>
         <table><thead><tr><th>Mã</th><th>Quỹ</th><th class="r">Số CP</th></tr></thead><tbody id="t-quy"></tbody></table></div>
     </div>
@@ -300,10 +298,8 @@
     }
 
     function drawTables(d) {
-      var g = $('t-giam'), n = $('t-ngoai'), q = $('t-quy');
+      var g = $('t-giam'), q = $('t-quy');
       d.top_giam.forEach(function (r) { addRow(g, [{ t: r[0], c: 'b' }, { t: sgn(r[1], 2) + '%', c: 'r ' + cls(r[1]) }, { t: nf(r[2]), c: 'r' }]); });
-      var mx = Math.max.apply(null, d.khoi_ngoai.map(function (r) { return r[1]; })) || 1;
-      d.khoi_ngoai.forEach(function (r) { addRow(n, [{ t: r[0], bar: r[1] / mx * 100 }, { t: nf(r[1]), c: 'r dg-up' }]); });
       d.quy.forEach(function (r) { addRow(q, [{ t: r[0] }, { t: r[1] }, { t: sgn(r[2]), c: 'r ' + cls(r[2]) }]); });
     }
 
@@ -318,6 +314,173 @@
         $('dg-sample').hidden = false;
         $('dg-sample').textContent = 'Chưa tải được dữ liệu. Vui lòng thử lại sau.';
       });
+  })();
+  </script>
+</section>
+
+<!-- ===== KHỐI NGOẠI VÀ TỰ DOANH ===== -->
+<section id="khoi-ngoai">
+  <style>
+    #khoi-ngoai .kn-box{ border:1px solid var(--line-strong,#2a3a2f); background:var(--black,#090d0a); padding:16px; min-width:0; }
+    #khoi-ngoai .kn-bar-top{ display:flex; flex-wrap:wrap; gap:12px 20px; justify-content:space-between; align-items:center; margin-bottom:6px; }
+    #khoi-ngoai .kn-tabs{ display:flex; flex-wrap:wrap; gap:8px; }
+    #khoi-ngoai .kn-tabs button{ background:transparent; color:inherit; border:1px solid var(--line-strong,#2a3a2f); padding:6px 12px; font-size:13px; cursor:pointer; font-family:var(--font-display,inherit); }
+    #khoi-ngoai .kn-tabs button:hover,#khoi-ngoai .kn-tabs button.active{ border-color:var(--green-400,#4ade80); color:var(--green-200,#bbf7d0); }
+    #khoi-ngoai .kn-tabs.kn-big button{ border:0; border-bottom:2px solid transparent; padding:4px 2px; margin-right:14px; font-size:18px; font-weight:700; color:var(--text-faint,#7d8a80); }
+    #khoi-ngoai .kn-tabs.kn-big button.active{ border-bottom-color:var(--green-400,#4ade80); color:inherit; }
+    #khoi-ngoai .kn-desc{ font-size:13px; color:var(--text-faint,#7d8a80); margin:0 0 14px; max-width:none; }
+    #khoi-ngoai .kn-live{ font-size:12.5px; color:var(--text-faint,#7d8a80); }
+    #khoi-ngoai .kn-live.on{ color:#4ade80; }
+    #khoi-ngoai .kn-grid{ display:grid; grid-template-columns:1.15fr 1fr; gap:28px; }
+    #khoi-ngoai .kn-grid > div{ min-width:0; }
+    #khoi-ngoai .kn-ch{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:4px; }
+    #khoi-ngoai .kn-ch h3{ font-family:var(--font-display,inherit); font-size:15px; margin:0; }
+    #khoi-ngoai .kn-ch .kn-n{ font-family:var(--font-display,inherit); font-weight:700; font-size:24px; }
+    #khoi-ngoai .kn-ch .kn-n small{ font-size:13px; margin-left:4px; }
+    #khoi-ngoai .kn-c{ width:100%; height:210px; margin-bottom:14px; }
+    #khoi-ngoai .kn-lists{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:10px; }
+    #khoi-ngoai .kn-lists h4{ font-size:13px; font-weight:500; margin:0 0 8px; text-align:center; }
+    #khoi-ngoai .kn-row{ display:flex; align-items:center; gap:6px; padding:5px 0; font-size:12.5px; }
+    #khoi-ngoai .kn-row b{ width:62px; flex:none; }
+    #khoi-ngoai .kn-row .kn-v{ width:44px; flex:none; }
+    #khoi-ngoai .kn-row .kn-t{ flex:1; min-width:0; }
+    #khoi-ngoai .kn-buy .kn-row b{ text-align:left; order:3; } #khoi-ngoai .kn-buy .kn-v{ text-align:right; order:1; } #khoi-ngoai .kn-buy .kn-t{ order:2; display:flex; justify-content:flex-end; }
+    #khoi-ngoai .kn-sell .kn-v{ text-align:left; }
+    #khoi-ngoai .kn-bar{ display:block; height:12px; min-width:2px; }
+    #khoi-ngoai .kn-up{ color:#4ade80; } #khoi-ngoai .kn-down{ color:#f87171; }
+    #khoi-ngoai .kn-bar.kn-up{ background:#4ade80; } #khoi-ngoai .kn-bar.kn-down{ background:#f87171; }
+    #khoi-ngoai .kn-note{ font-size:12.5px; color:var(--text-faint,#7d8a80); margin:12px 0 0; max-width:none; }
+    #khoi-ngoai .kn-warn{ color:#f0d28a; }
+    @media (max-width:900px){ #khoi-ngoai .kn-grid{ grid-template-columns:1fr; } }
+  </style>
+  <div class="wrap">
+    <div class="head-row">
+      <div>
+        <div class="eyebrow">Thị trường</div>
+        <h2>Giao dịch khối ngoại và tự doanh</h2>
+      </div>
+      <p>Khối lượng và giá trị mua bán ròng tích lũy theo thời gian, cùng các cổ phiếu được mua, bán ròng nhiều nhất.</p>
+    </div>
+    <div class="kn-box">
+      <div class="kn-bar-top">
+        <div class="kn-tabs kn-big" id="kn-group">
+          <button type="button" data-g="foreign" class="active">Nước ngoài</button>
+          <button type="button" data-g="prop">Tự doanh</button>
+        </div>
+        <div class="kn-tabs" id="kn-tabs">
+          <button type="button" data-p="1D" class="active">Hôm nay</button>
+          <button type="button" data-p="1W">1 tuần</button>
+          <button type="button" data-p="1M">1 tháng</button>
+          <button type="button" data-p="YTD">Từ đầu năm</button>
+          <button type="button" data-p="1Y">1 năm</button>
+        </div>
+      </div>
+      <p class="kn-desc">Biểu đồ thể hiện các cổ phiếu (gồm cả quỹ ETF) được giao dịch nhiều nhất theo khối lượng, giá trị và mua/bán ròng. <span class="kn-live" id="kn-live">Đang tải dữ liệu...</span></p>
+      <div class="kn-grid">
+        <div>
+          <div class="kn-ch"><h3>KLGD ròng tích lũy (CP)</h3><div class="kn-n" id="kn-nv">--</div></div>
+          <div class="kn-c" id="kn-cv"></div>
+          <div class="kn-ch"><h3>GTGD ròng tích lũy (VNĐ)</h3><div class="kn-n" id="kn-ng">--</div></div>
+          <div class="kn-c" id="kn-cg"></div>
+        </div>
+        <div>
+          <div class="kn-ch"><h3>Top cổ phiếu giao dịch (tỷ đồng)</h3></div>
+          <div class="kn-lists">
+            <div class="kn-buy"><h4>Mua ròng</h4><div id="kn-buy"></div></div>
+            <div class="kn-sell"><h4>Bán ròng</h4><div id="kn-sell"></div></div>
+          </div>
+        </div>
+      </div>
+      <p class="kn-note kn-warn" id="kn-sample" hidden>Đang hiển thị dữ liệu mẫu. Cần nguồn dữ liệu thật để chạy trực tiếp.</p>
+      <p class="kn-note">Số liệu mang tính tham khảo, không phải khuyến nghị đầu tư.</p>
+    </div>
+  </div>
+  <script>
+  (function () {
+    // Đổi LIVE_URL thành địa chỉ API/Worker của bạn khi có nguồn dữ liệu trực tiếp (cùng định dạng JSON).
+    var LIVE_URL = 'data/foreign.json';
+    var $ = function (id) { return document.getElementById(id); };
+    var nf = function (n, d) { return Number(n).toLocaleString('vi-VN', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); };
+    var cls = function (n) { return n < 0 ? 'kn-down' : 'kn-up'; };
+    function el(tag, c, t) { var e = document.createElement(tag); if (c) e.className = c; if (t != null) e.textContent = t; return e; }
+    var D, G = 'foreign', P = '1D', C = {}, timer;
+
+    function vnNow() { var n = new Date(); return new Date(n.getTime() + (n.getTimezoneOffset() + 420) * 60000); }
+    function isOpen() { var v = vnNow(), m = v.getHours() * 60 + v.getMinutes(); return v.getDay() > 0 && v.getDay() < 6 && m >= 540 && m <= 905; }
+    function mk(id) {
+      var chart = LightweightCharts.createChart($(id), {
+        autoSize: true,
+        layout: { background: { type: 'solid', color: 'transparent' }, textColor: '#9aa59d' },
+        grid: { vertLines: { color: 'rgba(255,255,255,0.04)' }, horzLines: { color: 'rgba(255,255,255,0.04)' } },
+        rightPriceScale: { borderColor: 'rgba(255,255,255,0.12)' }, timeScale: { borderColor: 'rgba(255,255,255,0.12)' },
+      });
+      var s = chart.addBaselineSeries({
+        baseValue: { type: 'price', price: 0 },
+        topLineColor: '#4ade80', topFillColor1: 'rgba(74,222,128,0.25)', topFillColor2: 'rgba(74,222,128,0.02)',
+        bottomLineColor: '#f87171', bottomFillColor1: 'rgba(248,113,113,0.02)', bottomFillColor2: 'rgba(248,113,113,0.25)',
+        lineWidth: 2, priceFormat: { type: 'price', precision: 1, minMove: 0.1 },
+      });
+      return { chart: chart, s: s };
+    }
+    function head(id, v, unit) {
+      var box = $(id); box.textContent = '';
+      var t = el('span', cls(v), (v > 0 ? '+' : v < 0 ? '−' : '') + nf(Math.abs(v), 1));
+      t.appendChild(el('small', null, unit)); box.appendChild(t);
+    }
+    function lists(box, rows, c, sell) {
+      box.textContent = '';
+      var max = Math.max.apply(null, rows.map(function (r) { return Math.abs(r[1]); })) || 1;
+      rows.forEach(function (r) {
+        var row = el('div', 'kn-row'), t = el('span', 'kn-t'), b = el('span', 'kn-bar ' + c);
+        b.style.width = (Math.abs(r[1]) / max * 100) + '%'; t.appendChild(b);
+        var v = el('span', 'kn-v ' + c, nf(r[1], 1)), code = el('b', null, r[0]);
+        if (sell) { row.appendChild(code); row.appendChild(t); row.appendChild(v); }
+        else { row.appendChild(v); row.appendChild(t); row.appendChild(code); }
+        box.appendChild(row);
+      });
+    }
+    function render() {
+      var S = D[G][P], day = P === '1D';
+      var ts = S.labels.map(function (l) { return Date.parse(day ? D.date + 'T' + l + ':00Z' : l + 'T00:00:00Z') / 1000; });
+      [['vol', 'cv', 'nv', 'triệu'], ['val', 'cg', 'ng', 'tỷ']].forEach(function (k) {
+        var c = C[k[1]], arr = S[k[0]];
+        c.chart.applyOptions({ timeScale: { timeVisible: day, secondsVisible: false } });
+        c.s.setData(ts.map(function (t, i) { return { time: t, value: arr[i] }; }));
+        var d0 = Date.parse(D.date + 'T00:00:00Z') / 1000;
+        try { if (day) c.chart.timeScale().setVisibleRange({ from: d0 + 9 * 3600, to: d0 + 15 * 3600 }); else c.chart.timeScale().fitContent(); }
+        catch (e) { c.chart.timeScale().fitContent(); }
+        head(k[2], arr[arr.length - 1], k[3]);
+      });
+      lists($('kn-buy'), S.top.buy, 'kn-up', false); lists($('kn-sell'), S.top.sell, 'kn-down', true);
+      var live = $('kn-live'), on = !D.sample && isOpen();
+      live.className = 'kn-live' + (on ? ' on' : '');
+      live.textContent = D.sample ? 'Dữ liệu mẫu' : (on ? '● Trực tiếp, cập nhật ' : 'Cuối phiên, cập nhật ') + (D.updated || '');
+      $('kn-sample').hidden = !D.sample;
+    }
+    function load(first) {
+      clearTimeout(timer);
+      fetch(LIVE_URL + (LIVE_URL.indexOf('?') < 0 ? '?' : '&') + 'v=' + Date.now())
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (d) { D = d; if (first) init(); render(); })
+        .catch(function () { if (first) $('kn-live').textContent = 'Chưa tải được dữ liệu. Vui lòng thử lại sau.'; })
+        .then(function () { timer = setTimeout(function () { if (!document.hidden) load(false); else timer = setTimeout(arguments.callee, 30000); }, isOpen() ? 30000 : 300000); });
+    }
+    function init() {
+      if (!window.LightweightCharts) throw new Error('lib');
+      C.cv = mk('kn-cv'); C.cg = mk('kn-cg');
+      function wire(id, attr, set) {
+        var bs = document.querySelectorAll('#' + id + ' button');
+        Array.prototype.forEach.call(bs, function (b) {
+          b.addEventListener('click', function () {
+            Array.prototype.forEach.call(bs, function (x) { x.classList.remove('active'); });
+            b.classList.add('active'); set(b.getAttribute(attr)); render();
+          });
+        });
+      }
+      wire('kn-group', 'data-g', function (v) { G = v; });
+      wire('kn-tabs', 'data-p', function (v) { P = v; });
+    }
+    load(true);
   })();
   </script>
 </section>
